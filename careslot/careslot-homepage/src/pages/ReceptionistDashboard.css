@@ -1,0 +1,79 @@
+.receptionist-dashboard {
+    width: 100%;
+}
+
+.receptionist-dashboard h1 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.controls {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.controls input[type="date"] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    vertical-align: middle;
+}
+
+th {
+    background-color: #f8f9fa;
+}
+
+.patient-email {
+    font-size: 0.85em;
+    color: #666;
+}
+
+button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    transition: background-color 0.2s;
+}
+
+button:hover:not(:disabled) {
+    background-color: #0056b3;
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+button.sent {
+    background-color: #28a745;
+}
+
+.feedback-error {
+    color: #dc3545;
+    font-size: 0.8em;
+    margin-top: 5px;
+}
+
+.patient-contact {
+    font-size: 0.85em;
+    color: #666;
+    margin-top: 2px;
+}

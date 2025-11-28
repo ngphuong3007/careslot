@@ -1,0 +1,75 @@
+.lookup-modal {
+    max-width: 600px;
+    padding: 25px;
+}
+
+.lookup-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.lookup-form input {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.lookup-form button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.lookup-form button:disabled {
+    background-color: #a0cfff;
+}
+
+.lookup-results ul {
+    list-style: none;
+    padding: 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.appointment-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+}
+
+.appointment-time {
+    font-weight: bold;
+    flex-basis: 180px;
+}
+
+.appointment-details {
+    flex-grow: 1;
+}
+
+.appointment-details p {
+    margin: 2px 0;
+    font-size: 0.9em;
+}
+
+.appointment-status {
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.8em;
+    text-align: center;
+}
+
+.status-pending .appointment-status { background-color: #fff3cd; color: #856404; }
+.status-confirmed .appointment-status { background-color: #d4edda; color: #155724; }
+.status-cancelled .appointment-status { background-color: #f8d7da; color: #721c24; }
+.status-completed .appointment-status { background-color: #e2e3e5; color: #383d41; }

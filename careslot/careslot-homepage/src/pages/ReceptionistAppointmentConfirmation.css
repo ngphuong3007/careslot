@@ -1,0 +1,82 @@
+.confirmation-dashboard {
+    width: 100%;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.confirmation-dashboard h1 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.appointments-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.appointments-table th,
+.appointments-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    vertical-align: middle;
+}
+
+.appointments-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+.patient-contact {
+    font-size: 0.85em;
+    color: #666;
+    margin-top: 2px;
+}
+
+.confirm-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.confirm-btn:hover {
+    background-color: #218838;
+}
+
+.confirm-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.feedback-error {
+    color: #dc3545;
+    font-size: 0.8em;
+    margin-top: 5px;
+}
+.cancel-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.cancel-btn:hover {
+    background-color: #c82333;
+}
+
+.cancel-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}

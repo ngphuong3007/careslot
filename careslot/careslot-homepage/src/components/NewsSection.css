@@ -1,0 +1,132 @@
+.news-custom-layout {
+    min-height: 95vh;
+    max-width: 1310px;
+    margin: 0 auto 48px auto;
+    background: linear-gradient(120deg, #f7fbff 0%, #b3e0ff 100%);
+    border: 3px solid #1da1f2;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 8px 32px rgba(29,161,242,0.10);
+    padding: 32px 0;
+}
+
+.news-main-row {
+  display: flex;
+  gap: 24px;
+}
+
+.news-main {
+  flex: 2;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(29,161,242,0.08);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.news-main-img {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+}
+
+.news-main-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin: 16px 16px 8px 16px;
+  color: #222;
+}
+
+.news-main-desc {
+  font-size: 1rem;
+  color: #444;
+  margin: 0 16px 16px 16px;
+  min-height: 48px;
+}
+
+.news-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.news-right-item {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(29,161,242,0.08);
+  margin-bottom: 8px;
+  text-decoration: none;
+}
+
+.news-right-img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+}
+
+.news-right-title {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #222;
+  padding: 10px 12px 8px 12px;
+}
+
+.news-right-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.news-right-list li {
+  border-bottom: 1px solid #eee;
+}
+
+.news-right-link {
+  display: block;
+  color: #222;
+  font-size: 0.98rem;
+  padding: 8px 0 8px 0;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.news-right-link:hover {
+  color: #1da1f2;
+}
+
+.news-small-row {
+  display: flex;
+  gap: 18px;
+  margin-top: 28px;
+}
+
+.news-small {
+  flex: 1;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(29,161,242,0.08);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.news-small-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.news-small-title {
+  font-size: 0.98rem;
+  font-weight: 500;
+  text-decoration: none;
+  color: #222;
+  padding: 10px 10px 12px 10px;
+  min-height: 48px;
+}

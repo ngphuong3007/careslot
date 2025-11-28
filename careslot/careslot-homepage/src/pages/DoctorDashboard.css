@@ -1,0 +1,146 @@
+.doctor-dashboard {
+    padding: 20px;
+    background-color: #f9f9f9;
+    height: 100%;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.dashboard-header h2 {
+    color: #333;
+    margin: 0;
+}
+
+.navigation-controls button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0 5px;
+    transition: background-color 0.3s;
+}
+
+.navigation-controls button:hover {
+    background-color: #0056b3;
+}
+
+.week-display {
+    font-weight: bold;
+    color: #555;
+    margin: 0;
+}
+
+.schedule-grid-container {
+    overflow: auto;
+    height: calc(100vh - 200px); /* Điều chỉnh chiều cao để vừa với màn hình */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.schedule-grid {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    min-width: 900px; /* Đảm bảo bảng không quá hẹp */
+}
+
+.schedule-grid th, .schedule-grid td {
+    border: 1px solid #ddd;
+    padding: 4px;
+    text-align: center;
+    vertical-align: top;
+}
+
+.schedule-grid thead th {
+    background-color: #e9ecef;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    padding: 8px 4px;
+}
+
+.time-header, .time-cell {
+    width: 80px;
+    font-weight: bold;
+    background-color: #f8f9fa;
+    position: sticky;
+    left: 0;
+    z-index: 1;
+}
+
+.time-cell {
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.slot-cell {
+    height: 60px;
+    background-color: #fff;
+}
+
+.slot-cell.booked {
+    padding: 2px; /* Thêm khoảng đệm nhỏ khi có lịch hẹn */
+}
+
+.appointment-card {
+    background-color: #cce5ff;
+    border-left: 4px solid #007bff;
+    border-radius: 4px;
+    padding: 5px;
+    font-size: 12px;
+    text-align: left;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.appointment-card strong {
+    font-weight: bold;
+    color: #004085;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.appointment-card span {
+    font-size: 11px;
+    color: #555;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.appointment-card span {
+    font-size: 11px;
+    color: #555;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.appointment-card.status-bg-pending {
+    background-color: #fff3cd; /* Vàng nhạt */
+    border-left-color: #ffc107;
+}
+
+.appointment-card.status-bg-completed {
+    background-color: #d4edda; /* Xanh lá nhạt */
+    border-left-color: #28a745;
+}
+
+.appointment-card.status-bg-cancelled {
+    background-color: #f8d7da; /* Đỏ nhạt */
+    border-left-color: #dc3545;
+    text-decoration: line-through;
+}

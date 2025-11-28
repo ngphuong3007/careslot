@@ -1,0 +1,168 @@
+/* Layout tổng thể */
+.receptionist-quick-booking {
+  background: #fff;
+  padding: 32px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  max-width: 1000px;
+  margin: 32px auto;
+  font-family: 'Inter', sans-serif;
+}
+
+.receptionist-quick-booking h1 {
+  margin: 0 0 24px;
+  color: #0f172a;
+  font-size: 28px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Alert */
+.alert {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+
+.alert.success {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.alert.error {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+/* Form */
+.quick-booking-form section {
+  margin-bottom: 32px;
+}
+
+.quick-booking-form h2 {
+  font-size: 20px;
+  color: #0f172a;
+  margin-bottom: 16px;
+  border-left: 4px solid #3b82f6;
+  padding-left: 12px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  color: #475569;
+  font-weight: 600;
+  gap: 6px;
+}
+
+input,
+select,
+textarea {
+  padding: 10px 12px;
+  border: 1px solid #cbd5f5;
+  border-radius: 8px;
+  font-size: 15px;
+  color: #0f172a;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  outline: none;
+}
+
+textarea {
+  resize: vertical;
+}
+
+/* Slot picker */
+.slot-picker {
+  margin-bottom: 16px;
+}
+
+.slot-picker__label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 8px;
+}
+
+.slot-picker__status {
+  border: 1px dashed #cbd5f5;
+  border-radius: 8px;
+  padding: 12px;
+  color: #64748b;
+  background: #f8fafc;
+  text-align: center;
+}
+
+.slot-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.slot-btn {
+  border: 1px solid #cbd5f5;
+  border-radius: 10px;
+  background: #fff;
+  padding: 10px 18px;
+  font-weight: 600;
+  color: #0f172a;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.slot-btn:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+.slot-btn.selected {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
+}
+
+/* Button */
+button[type='submit'] {
+  width: 100%;
+  padding: 14px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+button[type='submit']:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+button[type='submit']:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .receptionist-quick-booking {
+    padding: 20px;
+  }
+}

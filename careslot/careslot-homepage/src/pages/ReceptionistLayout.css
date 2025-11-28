@@ -1,0 +1,54 @@
+.receptionist-layout-container {
+    display: flex;
+}
+
+.receptionist-sidebar {
+    width: 240px;
+    background-color: #f8f9fa;
+    border-right: 1px solid #dee2e6;
+    padding: 20px;
+    padding-top: 100px; /* Đẩy nội dung xuống dưới Header */
+    flex-shrink: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    box-sizing: border-box;
+    z-index: 99; /* Đảm bảo nằm dưới Header */
+}
+
+.receptionist-sidebar nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.receptionist-sidebar nav li {
+    margin-bottom: 10px;
+}
+
+.receptionist-sidebar nav a {
+    display: block;
+    padding: 12px 15px;
+    text-decoration: none;
+    color: #333;
+    border-radius: 5px;
+    font-weight: 500;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.receptionist-sidebar nav a:hover {
+    background-color: #e9ecef;
+}
+
+.receptionist-sidebar nav a.active-link {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.receptionist-main-content {
+    flex-grow: 1;
+    padding: 20px;
+    margin-left: 240px; /* Bằng chiều rộng của sidebar */
+    margin-top: 80px; /* Bằng chiều cao của header */
+}

@@ -1,0 +1,75 @@
+.admin-dashboard-page {
+  padding: 24px;
+}
+
+.admin-dashboard-page h1 {
+  margin-bottom: 24px;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+}
+
+.stat-card p {
+  color: #64748b;
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+}
+
+.stat-card h2 {
+  margin: 0;
+  font-size: 2rem;
+  color: #0f172a;
+}
+
+.stat-card span {
+  color: #2563eb;
+  font-weight: 600;
+}
+
+.chart-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.chart-filters button {
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  color: #475569;
+  padding: 8px 14px;
+  border-radius: 999px;
+  margin-left: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.chart-filters button:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+.chart-filters button.active {
+  background: #3b82f6;
+  color: #fff;
+  border-color: #3b82f6;
+}

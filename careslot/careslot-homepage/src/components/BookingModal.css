@@ -1,0 +1,173 @@
+/* --- QUY TẮC CHUNG CHO MODAL --- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Căn lề trên cùng */
+  padding-top: 10vh; /* Đẩy modal xuống 10% chiều cao màn hình */
+  z-index: 9999; /* Luôn nằm trên cùng */
+  padding-left: 20px;
+  padding-right: 20px;
+  box-sizing: border-box;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 25px 30px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 500px;
+  position: relative;
+  max-height: 80vh; /* Giới hạn chiều cao để không bị quá dài */
+  overflow-y: auto; /* Tự động thêm thanh cuộn khi cần */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  pointer-events: auto;
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  color: #0056b3;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* --- FORM STYLES --- */
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #333;
+}
+
+.form-group select,
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  font-size: 16px;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-group select:focus,
+.form-group input:focus {
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.form-group input[type="date"] {
+  position: relative;
+  color: #495057;
+}
+
+.form-group input[type="date"]::before {
+  content: attr(placeholder);
+  position: absolute;
+  color: #6c757d;
+  width: calc(100% - 30px);
+  display: block;
+  background-color: white;
+}
+
+.form-group input[type="date"]:valid::before {
+  display: none;
+}
+
+.form-group input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.form-group input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+.time-slots-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.time-slot {
+  padding: 8px 12px;
+  border: 1px solid #007bff;
+  color: #007bff;
+  background-color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.time-slot:not(:disabled):hover {
+  background-color: #e7f3ff;
+}
+
+.time-slot-booked {
+  background-color: #e9ecef;
+  border-color: #ced4da;
+  color: #6c757d;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.time-slot-selected {
+  background-color: #28a745;
+  border-color: #28a745;
+  color: white;
+}
+
+/* --- MODAL ACTIONS --- */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.submit-btn, .close-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.submit-btn {
+  background-color: #007bff;
+  color: white;
+}
+
+.submit-btn:hover {
+  background-color: #0056b3;
+}
+
+.close-btn {
+  background-color: #6c757d;
+  color: white;
+}
+.history-list li {
+    background-color: #f9f9f9;
+    border: 1px solid #eee;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+/* THÊM VÀO CUỐI FILE */
+.form-actions {
+    display: flex;
+    gap: 10px; 
+}

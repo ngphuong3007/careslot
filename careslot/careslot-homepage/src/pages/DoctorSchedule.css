@@ -1,0 +1,128 @@
+.schedule-management-container {
+    padding: 2rem;
+    background-color: #f9f9f9;
+}
+
+.schedule-management-container h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #333;
+}
+
+.schedule-main {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.calendar-wrapper {
+    flex: 1;
+    min-width: 350px;
+}
+
+.time-slot-editor {
+    flex: 1.5;
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.time-slot-editor h3 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #007bff;
+}
+
+.time-slots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+    margin-bottom: 1.5rem;
+}
+
+.time-slot-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.time-slot-label:has(input:checked) {
+    background-color: #e9f5ff;
+    border-color: #007bff;
+}
+
+.time-slot-label input[type="checkbox"] {
+    cursor: pointer;
+}
+
+.day-off-section {
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+}
+
+.day-off-section label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.save-schedule-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.save-schedule-btn:hover {
+    background-color: #218838;
+}
+
+.success-message {
+    color: green;
+    margin-top: 1rem;
+}
+
+.error-message {
+    color: red;
+    margin-bottom: 1rem;
+}
+
+/* Style cho các chấm trên lịch */
+.schedule-dot {
+    height: 8px;
+    width: 8px;
+    border-radius: 50%;
+    margin: 0 auto;
+}
+
+.schedule-dot.working-day {
+    background-color: #007bff;
+}
+
+.schedule-dot.day-off {
+    background-color: #dc3545;
+}
+
+.react-calendar__navigation__label {
+    color: #333; 
+    font-weight: bold;
+    flex-grow: 1 !important; 
+}
+
+.react-calendar__navigation__arrow {
+    color: #333;
+    font-weight: bold; 
+    font-size: 1.5em;
+}

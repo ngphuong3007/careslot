@@ -1,0 +1,56 @@
+.doctor-layout-container {
+    display: flex;
+    min-height: calc(100vh - 80px); /* Chiều cao màn hình trừ đi chiều cao Header */
+}
+
+.doctor-sidebar {
+    width: 240px;
+    background-color: #f8f9fa;
+    border-right: 1px solid #dee2e6;
+    /* SỬA LẠI: Thêm padding-top để đẩy sidebar xuống dưới Header */
+    padding: 80px 20px 20px 20px;
+    flex-shrink: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 100; /* Đảm bảo sidebar nằm dưới Header nếu Header có z-index cao hơn */
+}
+
+.doctor-sidebar nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.doctor-sidebar nav li {
+    margin-bottom: 10px;
+}
+
+.doctor-sidebar nav a {
+    display: block;
+    padding: 12px 15px;
+    text-decoration: none;
+    color: #333;
+    border-radius: 5px;
+    font-weight: 500;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.doctor-sidebar nav a:hover {
+    background-color: #e9ecef;
+}
+
+/* Style cho link đang được chọn */
+.doctor-sidebar nav a.active-link {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.doctor-main-content {
+    flex-grow: 1; /* Phần nội dung chính sẽ chiếm hết không gian còn lại */
+    padding: 20px;
+    background-color: #fff;
+    margin-left: 240px; /* Bằng chiều rộng của sidebar */
+    margin-top: 80px; /* Bằng chiều cao của header */
+}

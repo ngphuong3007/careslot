@@ -1,0 +1,114 @@
+/* --- QUY TẮC CHUNG CHO MODAL --- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Căn lề trên cùng */
+  padding-top: 15vh; /* Đẩy modal xuống 15% chiều cao màn hình */
+  z-index: 9999; /* Luôn nằm trên cùng */
+  padding-left: 20px;
+  padding-right: 20px;
+  box-sizing: border-box;
+}
+
+/* --- TÙY CHỈNH RIÊNG CHO NỘI DUNG MODAL ĐĂNG NHẬP --- */
+.modal-content {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(29,161,242,0.10);
+  padding: 40px 32px;
+  min-width: 340px;
+  max-width: 400px;
+  width: 100%;
+  border: 3px solid #1da1f2;
+  box-sizing: border-box;
+}
+
+.login-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 32px;
+    color: #222;
+    text-align: center;
+}
+
+.login-form {
+    width: 100%;
+}
+
+.login-row {
+    display: flex;
+    flex-direction: column; /* Chuyển sang layout cột */
+    align-items: flex-start; /* Căn lề trái */
+    margin-bottom: 16px;
+}
+
+.login-row label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.login-row input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background: #f7f7f7;
+    font-size: 1rem;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.login-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin-top: 24px;
+    margin-bottom: 8px;
+}
+
+.forgot-link {
+    align-self: flex-end;
+    color: #1da1f2;
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-top: 4px;
+}
+
+.login-btn {
+    width: 100%;
+    text-align: center;
+    background: #1da1f2;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.login-btn:hover {
+    background: #007bff;
+}
+
+.switch-form-link {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.switch-form-link a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+}
