@@ -65,7 +65,8 @@ const PatientManagement = ({ role }) => {
         setExpandedHistoryId(prevId => (prevId === id ? null : id));
     };
 
-    return (
+    // ...existing code...
+return (
         <div className="patient-management">
             <h1>Quản lý Bệnh nhân</h1>
             <div className="patient-layout">
@@ -77,20 +78,23 @@ const PatientManagement = ({ role }) => {
                         value={searchTerm}
                         onChange={e => setSearchTerm(e.target.value)}
                     />
-                    {loading ? <p>Đang tải danh sách...</p> : (
-                        <ul className="patient-list">
-                            {filteredPatients.map((p, idx) => (
-                                <li
-                                    key={p.patient_id ?? `${p.patient_phone}-${idx}`}
-                                    className={`patient-item ${selectedPatient?.patient_phone === p.patient_phone ? 'active' : ''}`}
-                                    onClick={() => handleSelectPatient(p)}
-                                >
-                                    <strong>{p.patient_name}</strong>
-                                    <span>{p.patient_phone}</span>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
+                    {/* Thêm div mới ở đây để tạo vùng cuộn */}
+                    <div className="list-scroll-area">
+                        {loading ? <p>Đang tải danh sách...</p> : (
+                            <ul className="patient-list">
+                                {filteredPatients.map((p, idx) => (
+                                    <li
+                                        key={p.patient_id ?? `${p.patient_phone}-${idx}`}
+                                        className={`patient-item ${selectedPatient?.patient_phone === p.patient_phone ? 'active' : ''}`}
+                                        onClick={() => handleSelectPatient(p)}
+                                    >
+                                        <strong>{p.patient_name}</strong>
+                                        <span>{p.patient_phone}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
                 </div>
                 <div className="patient-details-container">
                     {selectedPatient ? (

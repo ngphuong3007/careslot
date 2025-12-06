@@ -1,3 +1,4 @@
+/* Khung chat */
 .chat-box {
     width: 350px;
     height: 500px;
@@ -22,6 +23,7 @@
     }
 }
 
+/* Header */
 .chat-header {
     background: #1d4ed8;
     color: #fff;
@@ -30,18 +32,41 @@
     justify-content: space-between;
     align-items: center;
     flex-shrink: 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 }
 
-.chat-header h3 { margin: 0; font-size: 1.1rem; }
-.chat-header .close-btn { background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
+.chat-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+}
 
-.chat-content { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; }
+.chat-header .close-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
 
-.chat-initial-choices { padding: 20px; text-align: center; }
-.chat-initial-choices p { margin-bottom: 16px; font-size: 1rem; color: #333; }
+/* Nội dung */
+.chat-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Màn hình lựa chọn ban đầu */
+.chat-initial-choices {
+    padding: 20px;
+    text-align: center;
+}
+
+.chat-initial-choices p {
+    margin-bottom: 16px;
+    font-size: 1rem;
+    color: #333;
+}
+
 .chat-initial-choices button {
     display: block;
     width: 100%;
@@ -49,18 +74,38 @@
     margin-bottom: 10px;
     border: 1px solid #ddd;
     border-radius: 8px;
-    background: #f8f9fa;
+    background: #3d94eb;
     cursor: pointer;
     font-weight: 500;
     font-size: 0.95rem;
     transition: background-color 0.2s;
 }
-.chat-initial-choices button:hover { background-color: #e9ecef; }
 
-.chat-status { padding: 20px; text-align: center; color: #666; }
+.chat-initial-choices button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
 
-.chat-messages { flex-grow: 1; padding: 10px; overflow-y: auto; }
-.message-item { margin-bottom: 10px; display: flex; }
+/* Trạng thái chờ */
+.chat-status {
+    padding: 20px;
+    text-align: center;
+    color: #666;
+}
+
+/* Danh sách tin nhắn */
+.chat-messages {
+    flex-grow: 1;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+/* Message chung */
+.message-item {
+    margin-bottom: 8px;
+    display: flex;
+}
+
 .message-item p {
     padding: 8px 12px;
     border-radius: 18px;
@@ -68,9 +113,28 @@
     word-wrap: break-word;
     line-height: 1.4;
 }
-.message-item.sent { justify-content: flex-end; }
-.message-item.sent p { background: #1d4ed8; color: #fff; }
-.message-item.received p { background: #e9ecef; color: #212529; }
+
+/* Tin mình gửi */
+.message-item.sent {
+    justify-content: flex-end;
+}
+
+.message-item.sent p {
+    background: #1d4ed8;
+    color: #fff;
+}
+
+/* Tin nhận từ staff */
+.message-item.received {
+    justify-content: flex-start;
+}
+
+.message-item.received p {
+    background: #e9ecef;
+    color: #212529;
+}
+
+/* Tin hệ thống */
 .message-item.system p {
     width: 100%;
     text-align: center;
@@ -80,6 +144,7 @@
     padding: 4px;
 }
 
+/* Form nhập tin */
 .chat-input-form {
     display: flex;
     border-top: 1px solid #eee;
@@ -87,8 +152,20 @@
     background: #fff;
     flex-shrink: 0;
 }
-.chat-input-form input { flex-grow: 1; border: 1px solid #ddd; border-radius: 18px; padding: 10px 15px; outline: none; font-size: 0.95rem; }
-.chat-input-form input:focus { border-color: #1d4ed8; }
+
+.chat-input-form input {
+    flex-grow: 1;
+    border: 1px solid #ddd;
+    border-radius: 18px;
+    padding: 10px 15px;
+    outline: none;
+    font-size: 0.95rem;
+}
+
+.chat-input-form input:focus {
+    border-color: #1d4ed8;
+}
+
 .chat-input-form button {
     border: none;
     background: transparent;
@@ -99,6 +176,8 @@
     font-weight: 600;
     font-size: 0.95rem;
 }
+
+/* Nút quay lại trong header */
 .chat-header-actions {
     display: flex;
     gap: 8px;
@@ -112,15 +191,3 @@
     font-size: 0.8rem;
     cursor: pointer;
 }
-.message-item {
-  margin-bottom: 8px;
-  display: flex;
-}
-.message-item.received {
-  justify-content: flex-start;
-}
-.message-item.received p {
-  background: #e9ecef;
-  color: #212529;
-}
-

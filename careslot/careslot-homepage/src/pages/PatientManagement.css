@@ -1,18 +1,164 @@
+/* Container chính của toàn bộ trang quản lý */
 .patient-management {
-    padding: 20px;
-    height: 100%;
     display: flex;
     flex-direction: column;
+    /* Quan trọng: Chiếm toàn bộ chiều cao của không gian có sẵn */
+    height: 100%; 
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .patient-management h1 {
     margin-bottom: 20px;
+    /* Ngăn tiêu đề bị co lại */
+    flex-shrink: 0;
+}
+
+/* Layout chứa 2 cột chính (danh sách và chi tiết) */
+.patient-layout {
+    display: flex;
+    gap: 20px;
+    /* Quan trọng: Lấp đầy không gian còn lại bên dưới tiêu đề */
+    flex-grow: 1;
+    /* Quan trọng: Ngăn layout bị tràn và ẩn đi phần thừa */
+    overflow: hidden;
+}
+
+/* Cột danh sách bệnh nhân bên trái */
+.patient-list-container {
+    flex: 0 0 320px; /* Chiều rộng cố định 320px */
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    /* Quan trọng: Ngăn cột này bị tràn */
+    overflow: hidden;
+}
+
+.search-input {
+    padding: 12px;
+    margin: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    /* Ngăn ô tìm kiếm bị co lại */
+    flex-shrink: 0;
+}
+
+/* VÙNG CÓ THANH CUỘN BÊN TRÁI */
+.list-scroll-area {
+    /* Lấp đầy không gian còn lại bên dưới ô tìm kiếm */
+    flex-grow: 1;
+    /* Hiển thị thanh cuộn khi nội dung vượt quá */
+    overflow-y: auto;
+}
+
+.patient-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.patient-item {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.patient-item:last-child {
+    border-bottom: none;
+}
+
+.patient-item:hover {
+    background-color: #f0f5ff;
+}
+
+.patient-item.active {
+    background-color: #e6f0ff;
+    border-left: 3px solid #1d4ed8;
+    padding-left: 12px;
+}
+
+.patient-item strong {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.patient-item span {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.patient-details-container {
+    flex-grow: 1;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    background-color: #fff;
+    overflow-y: auto;
+}
+
+.patient-details-container h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.history-item {
+    border: 1px solid #eee;
+    border-left: 4px solid #ccc;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: #fafafa;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: bold;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.status-badge.completed {
+    background-color: #28a745;
+}
+
+.status-badge.confirmed {
+    background-color: #007bff;
+}
+
+.status-badge.cancelled {
+    background-color: #dc3545;
+}
+
+.placeholder-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #888;
+}
+
+.patient-management {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 160px);
+    min-height: 0;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .patient-layout {
     display: flex;
     gap: 20px;
-    flex-grow: 1;
+    flex: 1;
+    min-height: 0;        /* quan trọng */
     overflow: hidden;
 }
 
@@ -20,119 +166,15 @@
     flex: 0 0 320px;
     display: flex;
     flex-direction: column;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #fff;
-    overflow: hidden;
-}
-
-.search-input {
-    width: auto;
-    padding: 12px;
-    margin: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-.patient-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    overflow-y: auto;
-    flex-grow: 1;
-}
-
-.patient-item {
-    padding: 15px;
-    border-bottom: 1px solid #eee;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    transition: background-color 0.2s;
-}
-
-.patient-item:hover {
-    background-color: #f0f8ff;
-}
-
-.patient-item.active {
-    background-color: #e0f0ff;
-    border-left: 4px solid #007bff;
-    padding-left: 11px;
-}
-
-.patient-item strong {
-    font-weight: 600;
-    color: #333;
-}
-
-.patient-item span {
-    font-size: 0.9em;
-    color: #666;
-    margin-top: 4px;
-}
-
-.patient-details-container {
-    flex-grow: 1;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #fff;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
-
-.patient-details-container h2 {
-    padding: 15px 20px;
-    margin: 0;
-    border-bottom: 1px solid #ddd;
-    background-color: #f8f9fa;
-}
-
-.history-list {
-    padding: 20px;
-    overflow-y: auto;
-    flex-grow: 1;
-}
-
-.history-item {
-    background-color: #f9f9f9;
-    border: 1px solid #eee;
-    border-left: 5px solid #6c757d;
-    border-radius: 5px;
-    padding: 15px;
-    margin-bottom: 15px;
-}
-
-.history-item-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.history-item p {
-    margin: 5px 0;
-}
-
-.status-badge {
-    padding: 3px 8px;
-    border-radius: 12px;
-    font-size: 0.8em;
-    color: white;
-    font-weight: bold;
-}
-.status-completed { background-color: #28a745; }
-.status-confirmed { background-color: #007bff; }
-.status-pending { background-color: #ffc107; color: #333; }
-.status-cancelled { background-color: #dc3545; }
-
-.placeholder-text {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    min-height: 0;        /* quan trọng */
     height: 100%;
-    color: #888;
-    text-align: center;
-    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.list-scroll-area {
+    flex: 1;
+    min-height: 0;  
+    overflow-y: auto;
 }

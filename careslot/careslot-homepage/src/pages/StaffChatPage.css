@@ -154,3 +154,30 @@
     color: #999;
     font-size: 1rem;
 }
+.conversation-list {
+    width: 320px;
+    border-right: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    /* Thêm dòng này để giới hạn chiều cao của cột */
+    height: 100%;
+}
+
+.list-header {
+    padding: 16px;
+    border-bottom: 1px solid #ddd;
+    /* Đảm bảo header không bị co lại */
+    flex-shrink: 0;
+}
+
+.list-header h3 {
+    margin: 0;
+    font-size: 1.05rem;
+}
+
+/* Thêm class mới này để tạo vùng cuộn */
+.list-body {
+    flex-grow: 1; /* Lấp đầy không gian còn lại */
+    overflow-y: auto; /* Hiển thị thanh cuộn khi cần */
+}

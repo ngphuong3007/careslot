@@ -101,18 +101,20 @@ const StaffChatPage = () => {
                 <div className="list-header">
                     <h3>Tin nhắn</h3>
                 </div>
-                {conversations.map((conv) => (
-                    <div
-                        key={conv.id}
-                        className={`conversation-item ${
-                            activeConversation?.id === conv.id ? 'active' : ''
-                        }`}
-                        onClick={() => selectConversation(conv)}
-                    >
-                        <strong>{conv.patient_name || conv.anonymous_name || 'Khách'}</strong>
-                        <p>Trạng thái: {conv.status}</p>
-                    </div>
-                ))}
+                <div className="list-body">
+                    {conversations.map((conv) => (
+                        <div
+                            key={conv.id}
+                            className={`conversation-item ${
+                                activeConversation?.id === conv.id ? 'active' : ''
+                            }`}
+                            onClick={() => selectConversation(conv)}
+                        >
+                            <strong>{conv.patient_name || conv.anonymous_name || 'Khách vãng lai'}</strong>
+                            <p>Trạng thái: {conv.status}</p>
+                        </div>
+                    ))}
+                </div>
             </div>
 
             <div className="chat-panel">

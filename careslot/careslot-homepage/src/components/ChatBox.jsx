@@ -114,8 +114,8 @@ const ChatBox = ({ socket, identity, onClose }) => {
                 return (
                     <div className="chat-initial-choices">
                         <p>Chào bạn, bạn cần hỗ trợ về vấn đề gì?</p>
-                        <button onClick={() => handleChoice('doctor')}>🩺 Tư vấn sức khỏe (Bác sĩ)</button>
-                        <button onClick={() => handleChoice('receptionist')}>🎧 Chăm sóc khách hàng (Lễ tân)</button>
+                        <button onClick={() => handleChoice('doctor')}>🩺 Tư vấn sức khỏe</button>
+                        <button onClick={() => handleChoice('receptionist')}>🎧 Chăm sóc khách hàng</button>
                     </div>
                 );
             case 'waiting':

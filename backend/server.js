@@ -107,32 +107,36 @@ io.on('connection', (socket) => {
   });
 
   socket.on('chat:send_message', async ({ conversationId, senderId, receiverId, content }) => {
-    try {
-      const safeSenderId =
-        senderId && Number(senderId) > 0 ? Number(senderId) : GUEST_USER_ID;
+  try {
+    const safeSenderId =
+      senderId && Number(senderId) > 0 ? Number(senderId) : GUEST_USER_ID;
 
-      const [result] = await db.query(
-        `INSERT INTO messages (conversation_id, sender_id, content)
-         VALUES (?, ?, ?)`,
-        [conversationId, safeSenderId, content]
-      );
-      const [rows] = await db.query('SELECT * FROM messages WHERE id = ?', [result.insertId]);
-      const newMessage = rows[0];
+    const [result] = await db.query(
+      `INSERT INTO messages (conversation_id, sender_id, content)
+       VALUES (?, ?, ?)`,
+      [conversationId, safeSenderId, content]
+    );
+    const [rows] = await db.query('SELECT * FROM messages WHERE id = ?', [result.insertId]);
+    const newMessage = rows[0];
 
-      // 1. Gửi lại cho socket đang gửi (staff hoặc guest)
-      socket.emit('chat:receive_message', newMessage);
+    // Cập nhật thời gian hoạt động cuối của cuộc trò chuyện
+    await db.query(
+      `UPDATE conversations SET updated_at = NOW() WHERE id = ?`,
+      [conversationId]
+    );
 
-      // 2. Broadcast cho TẤT CẢ các socket khác;
-      // client sẽ tự lọc bằng conversation_id
-      for (const [id, s] of io.sockets.sockets) {
-        if (id !== socket.id) {
-          s.emit('chat:receive_message', newMessage);
-        }
+    // 1. Gửi lại cho socket đang gửi (staff hoặc guest)
+    socket.emit('chat:receive_message', newMessage);
+
+    for (const [id, s] of io.sockets.sockets) {
+      if (id !== socket.id) {
+        s.emit('chat:receive_message', newMessage);
       }
-    } catch (err) {
-      console.error('[Socket.IO] Lỗi khi gửi tin nhắn:', err);
     }
-  });
+  } catch (err) {
+    console.error('[Socket.IO] Lỗi khi gửi tin nhắn:', err);
+  }
+});
 
   socket.on('disconnect', () => {
     console.log(`[Socket.IO] Người dùng đã ngắt kết nối: ${socket.id}`);
@@ -1058,23 +1062,48 @@ app.get('/api/admin/dashboard-metrics', verifyToken, isAdmin, async (req, res) =
 });
 
 app.get('/api/chat/my-conversations', verifyToken, async (req, res) => {
-    try {
-        const userId = req.user.id;
-        const query = `
-            SELECT c.*, 
-                   p.full_name as patient_name, 
-                   s.full_name as staff_name 
-            FROM conversations c
-            JOIN users p ON c.user_id = p.id
-            LEFT JOIN users s ON c.staff_id = s.id
-            WHERE c.user_id = ? OR c.staff_id = ?
-            ORDER BY c.updated_at DESC
-        `;
-        const [conversations] = await db.query(query, [userId, userId]);
-        res.json(conversations);
-    } catch (error) {
-        res.status(500).json({ message: 'Lỗi server khi lấy danh sách hội thoại.' });
-    }
+  try {
+    const userId = req.user.id;
+    // Bỏ điều kiện "AND c.status IN ('active', 'pending')"
+    const query = `
+      SELECT c.*, 
+             p.full_name as patient_name, 
+             s.full_name as staff_name 
+      FROM conversations c
+      LEFT JOIN users p ON c.user_id = p.id
+      LEFT JOIN users s ON c.staff_id = s.id
+      WHERE c.staff_id = ?
+      ORDER BY c.updated_at DESC
+    `;
+    // Sửa lại query để lấy cả conversation của guest
+    const guestQuery = `
+      SELECT c.*, 
+             'Khách vãng lai' as patient_name,
+             s.full_name as staff_name
+      FROM conversations c
+      LEFT JOIN users s ON c.staff_id = s.id
+      WHERE c.staff_id = ? AND c.user_id IS NULL
+    `;
+    const userQuery = `
+      SELECT c.*, 
+             p.full_name as patient_name,
+             s.full_name as staff_name
+      FROM conversations c
+      JOIN users p ON c.user_id = p.id
+      LEFT JOIN users s ON c.staff_id = s.id
+      WHERE c.staff_id = ? AND c.user_id IS NOT NULL
+    `;
+
+    const [guestConversations] = await db.query(guestQuery, [userId]);
+    const [userConversations] = await db.query(userQuery, [userId]);
+
+    const allConversations = [...guestConversations, ...userConversations].sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+
+    res.json(allConversations);
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách hội thoại:", error);
+    res.status(500).json({ message: 'Lỗi server khi lấy danh sách hội thoại.' });
+  }
 });
 
 app.get('/api/chat/conversations/:id/messages', verifyToken, async (req, res) => {
@@ -1109,6 +1138,40 @@ app.get('/api/chat/active-conversation', verifyToken, async (req, res) => {
         res.status(500).json({ message: 'Lỗi server.' });
     }
 });
+
+setInterval(async () => {
+  try {
+    // BƯỚC 1: Chuyển các cuộc trò chuyện của guest không hoạt động sau 2 phút sang 'expired'
+    const [expiredResult] = await db.query(
+      `UPDATE conversations
+       SET status = 'expired'
+       WHERE status = 'active'
+         AND user_id IS NULL
+         AND updated_at < (NOW() - INTERVAL 2 MINUTE)`
+    );
+
+    if (expiredResult.affectedRows > 0) {
+        console.log(`[CRON] Đã chuyển ${expiredResult.affectedRows} cuộc trò chuyện của guest sang 'expired'.`);
+    }
+
+    // BƯỚC 2: Xóa các cuộc trò chuyện đã 'expired' hơn 2 phút
+    // (tức là tổng cộng 4 phút kể từ tin nhắn cuối cùng)
+    const [deleteResult] = await db.query(
+      `DELETE FROM conversations
+       WHERE status = 'expired'
+         AND user_id IS NULL
+         AND updated_at < (NOW() - INTERVAL 4 MINUTE)`
+    );
+
+    if (deleteResult.affectedRows > 0) {
+        console.log(`[CRON] Đã xóa vĩnh viễn ${deleteResult.affectedRows} cuộc trò chuyện hết hạn.`);
+    }
+
+  } catch (err) {
+    console.error('[CRON] Lỗi khi dọn dẹp hội thoại guest:', err);
+  }
+}, 30 * 1000);
+
 // ==================================================
 // === KHỞI CHẠY SERVER ============================
 // ==================================================
