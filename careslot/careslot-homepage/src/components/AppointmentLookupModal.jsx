@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './AppointmentLookupModal.css';
+import { apiRequest } from '../utils/api';
 
 const AppointmentLookupModal = ({ onClose }) => {
     const [phone, setPhone] = useState('');
@@ -19,7 +20,7 @@ const AppointmentLookupModal = ({ onClose }) => {
         setSearched(true);
 
         try {
-            const response = await fetch(`http://localhost:5000/api/public/appointments/lookup?phone=${phone}`);
+            const response = await fetch(`/api/public/appointments/lookup?phone=${phone}`);
             const data = await response.json();
             if (!response.ok) {
                 throw new Error(data.message || 'Đã có lỗi xảy ra.');

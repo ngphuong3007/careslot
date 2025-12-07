@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import io from 'socket.io-client';
+import { socket as sharedSocket } from '../socket';
+import { API_BASE } from '../utils/api';
 import './StaffChatPage.css';
 
 const StaffChatPage = () => {
     const { currentUser } = useContext(AuthContext);
-    const [socket, setSocket] = useState(null);
+    const [socket, setSocket] = useState(sharedSocket);
     const [conversations, setConversations] = useState([]);
     const [activeConversation, setActiveConversation] = useState(null);
     const [messages, setMessages] = useState([]);
@@ -26,19 +27,19 @@ const StaffChatPage = () => {
 
     // Kết nối socket và load danh sách cuộc trò chuyện
     useEffect(() => {
-        const newSocket = io('http://localhost:5000');
         setSocket(newSocket);
         if (currentUser) {
-            newSocket.emit('user:online', currentUser.id);
+            sharedSocket.emit('user:online', currentUser.id);
         }
 
-        fetch('http://localhost:5000/api/chat/my-conversations', {
+        fetch(`${API_BASE}/api/chat/my-conversations`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         })
             .then((res) => res.json())
-            .then(setConversations);
+            .then(setConversations)
+            .catch(console.error);
 
-        return () => newSocket.close();
+        return () => {};
     }, [currentUser]);
 
     useEffect(() => {
@@ -69,7 +70,7 @@ const StaffChatPage = () => {
     const selectConversation = (conv) => {
         setActiveConversation(conv);
         setMessages([]);
-        fetch(`http://localhost:5000/api/chat/conversations/${conv.id}/messages`, {
+        fetch(`api/chat/conversations/${conv.id}/messages`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         })
             .then((res) => res.json())

@@ -1,14 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import './PatientManagement.css';
-
-const apiRequest = async (url) => {
-    const token = localStorage.getItem('token');
-    const response = await fetch(`http://localhost:5000${url}`, {
-        headers: { 'Authorization': `Bearer ${token}` },
-    });
-    if (!response.ok) throw new Error('Failed to fetch data');
-    return response.json();
-};
+import { apiRequest } from '../utils/api';
 
 // SỬA LẠI: Thêm prop 'role' để xác định vai trò
 const PatientManagement = ({ role }) => {

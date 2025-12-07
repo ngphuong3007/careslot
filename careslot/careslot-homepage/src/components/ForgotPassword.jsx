@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Login.css';
+import { apiRequest } from '../utils/api';
 
 const ForgotPassword = ({ onBack }) => {
   // State để lưu email người dùng nhập
@@ -18,7 +19,7 @@ const ForgotPassword = ({ onBack }) => {
 
     try {
       // Gửi yêu cầu đến API /api/forgot-password
-      const response = await fetch('http://localhost:5000/api/forgot-password', {
+      const response = await fetch('api/forgot-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),

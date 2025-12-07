@@ -3,25 +3,9 @@ import DatePicker, { registerLocale } from 'react-datepicker';
 import vi from 'date-fns/locale/vi';
 import 'react-datepicker/dist/react-datepicker.css';
 import './DependentProfiles.css';
+import { apiRequest } from '../utils/api';
 
 registerLocale('vi', vi);
-
-const apiRequest = async (url, options = {}) => {
-    const token = localStorage.getItem('token');
-    const response = await fetch(`http://localhost:5000${url}`, {
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-            ...options.headers,
-        },
-    });
-    const data = await response.json();
-    if (!response.ok) {
-        throw new Error(data.message || 'Đã có lỗi xảy ra.');
-    }
-    return data;
-};
 
 const genderLabels = { male: 'Nam', female: 'Nữ', other: 'Khác' };
 

@@ -1,16 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './DoctorDashboard.css';
 import AppointmentDetailModal from '../components/AppointmentDetailModal'; // THÊM IMPORT
-
-// --- Helper Functions (không đổi) ---
-const apiRequest = async (url) => {
-    const token = localStorage.getItem('token');
-    const response = await fetch(`http://localhost:5000${url}`, {
-        headers: { 'Authorization': `Bearer ${token}` },
-    });
-    if (!response.ok) throw new Error('Failed to fetch data');
-    return response.json();
-};
+import { apiRequest } from '../utils/api';
 
 const getWeekDateRange = (date) => {
     const start = new Date(date);

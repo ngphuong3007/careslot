@@ -20,6 +20,9 @@ const port = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'careslot_12345';
 const GUEST_USER_ID = 9999;
 
+const allowedOrigins = (process.env.CORS_ORIGINS || '').split(',').filter(Boolean);
+app.use(cors({ origin: allowedOrigins, credentials: true }));
+
 // --- Middlewares ---
 app.use(cors());
 app.use(express.json());

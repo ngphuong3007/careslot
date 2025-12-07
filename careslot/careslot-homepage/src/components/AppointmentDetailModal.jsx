@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './AppointmentDetailModal.css';
 import BookingModal from './BookingModal';
+import { apiRequest } from '../utils/api';
 
 // SỬA LẠI: Thêm prop onSaveSuccess
 const AppointmentDetailModal = ({ appointmentId, onClose, onSaveSuccess }) => {
@@ -12,16 +13,6 @@ const AppointmentDetailModal = ({ appointmentId, onClose, onSaveSuccess }) => {
     const [message, setMessage] = useState('');
     
     const [isRebooking, setIsRebooking] = useState(false);
-
-    const apiRequest = async (url, options) => {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`http://localhost:5000${url}`, {
-            ...options,
-            headers: { ...options?.headers, 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-        });
-        if (!response.ok) throw new Error((await response.json()).message || 'Có lỗi xảy ra');
-        return response.json();
-    };
 
     useEffect(() => {
         if (!appointmentId) return;

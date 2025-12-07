@@ -1,20 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './ReceptionistQuickBooking.css';
-
-const apiRequest = async (url, options = {}) => {
-  const token = localStorage.getItem('token');
-  const response = await fetch(`http://localhost:5000${url}`, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
-      ...(options.headers || {})
-    }
-  });
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.message || 'Lỗi máy chủ');
-  return data;
-};
+import { apiRequest } from '../utils/api';
 
 const today = () => new Date().toISOString().split('T')[0];
 const parseSlotDate = (value) => {

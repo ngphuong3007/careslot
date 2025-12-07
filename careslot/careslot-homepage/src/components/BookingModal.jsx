@@ -3,6 +3,7 @@ import DatePicker, { registerLocale } from 'react-datepicker';
 import vi from 'date-fns/locale/vi';
 import 'react-datepicker/dist/react-datepicker.css';
 import './BookingModal.css';
+import { apiRequest } from '../utils/api';
 
 registerLocale('vi', vi);
 
@@ -43,8 +44,8 @@ const BookingModal = ({ onClose, currentUser, initialData = {}, isReExam = false
 
     useEffect(() => {
         Promise.all([
-            fetch('http://localhost:5000/api/services').then(res => res.json()),
-            fetch('http://localhost:5000/api/doctors').then(res => res.json())
+            fetch('api/services').then(res => res.json()),
+            fetch('api/doctors').then(res => res.json())
         ])
             .then(([servicesData, doctorsData]) => {
                 setServices(servicesData);
@@ -56,7 +57,7 @@ const BookingModal = ({ onClose, currentUser, initialData = {}, isReExam = false
     useEffect(() => {
         if (currentUser) {
             const token = localStorage.getItem('token');
-            fetch('http://localhost:5000/api/user/dependents', {
+            fetch('api/user/dependents', {
                 headers: { 'Authorization': `Bearer ${token}` }
             })
                 .then(res => res.json())
@@ -94,7 +95,7 @@ const BookingModal = ({ onClose, currentUser, initialData = {}, isReExam = false
             setScheduleLoading(true);
             setSchedule([]);
             setSelectedTime('');
-            fetch(`http://localhost:5000/api/doctors/${selectedDoctor}/schedule?date=${selectedDate}`)
+            fetch(`api/doctors/${selectedDoctor}/schedule?date=${selectedDate}`)
                 .then(res => res.json())
                 .then(data => {
                     const sortedData = data.sort((a, b) => new Date(a.time) - new Date(b.time));
@@ -135,7 +136,7 @@ const BookingModal = ({ onClose, currentUser, initialData = {}, isReExam = false
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/appointments', {
+            const response = await fetch('api/appointments', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

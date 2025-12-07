@@ -4,14 +4,14 @@ import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  BarElement, // Thay đổi: Dùng BarElement
+  BarElement, 
   Title,
   Tooltip,
   Legend,
 } from 'chart.js';
 import './AdminDashboard.css';
+import { apiRequest } from '../utils/api';
 
-// Đăng ký các thành phần cho biểu đồ cột
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -29,17 +29,16 @@ const AdminDashboard = () => {
     bestDoctor: null,
     bestService: null
   });
-  const [timeRange, setTimeRange] = useState('week'); // Thêm state cho bộ lọc: 'day', 'week', 'month'
+  const [timeRange, setTimeRange] = useState('week');
 
   useEffect(() => {
-    // Gọi API với tham số timeRange
-    fetch(`http://localhost:5000/api/admin/dashboard-metrics?range=${timeRange}`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    })
-      .then(res => res.json())
+    // ...existing code...
+    // { changed code } dùng apiRequest thay fetch localhost
+    apiRequest(`/api/admin/dashboard-metrics?range=${timeRange}`)
       .then(setStats)
       .catch(console.error);
-  }, [timeRange]); // useEffect sẽ chạy lại khi timeRange thay đổi
+    // ...existing code...
+  }, [timeRange]);
 
   const chartData = {
     labels: stats.revenue.map(item => item.label),
@@ -47,8 +46,8 @@ const AdminDashboard = () => {
       {
         label: 'Doanh thu',
         data: stats.revenue.map(item => item.value),
-        backgroundColor: 'rgba(59, 130, 246, 0.7)', // Màu nền cho cột
-        borderColor: 'rgba(59, 130, 246, 1)', // Màu viền cho cột
+        backgroundColor: 'rgba(59, 130, 246, 0.7)',
+        borderColor: 'rgba(59, 130, 246, 1)',
         borderWidth: 1,
       }
     ]
@@ -57,25 +56,16 @@ const AdminDashboard = () => {
   const chartOptions = {
     responsive: true,
     plugins: {
-      legend: {
-        position: 'top',
-      },
-      title: {
-        display: false,
-      },
+      legend: { position: 'top' },
+      title: { display: false },
     },
-    scales: {
-      y: {
-        beginAtZero: true // Bắt đầu trục Y từ 0
-      }
-    }
+    scales: { y: { beginAtZero: true } }
   };
 
   return (
     <div className="admin-dashboard-page">
       <h1>Dashboard thống kê</h1>
       <div className="stat-grid">
-        {/* ... các thẻ stat-card không đổi ... */}
         <div className="stat-card">
           <p>Lịch hẹn mới ({timeRange === 'day' ? 'hôm nay' : (timeRange === 'week' ? '7 ngày' : '30 ngày')})</p>
           <h2>{stats.newAppointments}</h2>
@@ -100,13 +90,11 @@ const AdminDashboard = () => {
         <div className="chart-header">
           <h3>Biểu đồ doanh thu</h3>
           <div className="chart-filters">
-            {/* Cập nhật state khi nhấn nút */}
             <button onClick={() => setTimeRange('day')} className={timeRange === 'day' ? 'active' : ''}>Ngày</button>
             <button onClick={() => setTimeRange('week')} className={timeRange === 'week' ? 'active' : ''}>Tuần</button>
             <button onClick={() => setTimeRange('month')} className={timeRange === 'month' ? 'active' : ''}>Tháng</button>
           </div>
         </div>
-        {/* Thay đổi: Dùng Bar và thêm options */}
         <Bar data={chartData} options={chartOptions} />
       </div>
     </div>

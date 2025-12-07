@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './DoctorSection.css';
+import { apiRequest } from '../utils/api';
 
 // Nhận prop currentUser từ Home.jsx
 const DoctorSection = ({ currentUser }) => {
@@ -12,7 +13,7 @@ const DoctorSection = ({ currentUser }) => {
       try {
         setLoading(true);
         // Sửa lại để gọi đúng port của backend
-        const response = await fetch('http://localhost:5000/api/doctors');
+        const response = await fetch('api/doctors');
         if (!response.ok) {
           throw new Error('Không thể tải dữ liệu bác sĩ.');
         }

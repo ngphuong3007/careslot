@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Login.css'; // Dùng chung CSS với Login cho tiện
+import { apiRequest } from '../utils/api';
 
 const ChangePassword = ({ onClose }) => {
   const [currentPassword, setCurrentPassword] = useState('');
@@ -23,7 +24,7 @@ const ChangePassword = ({ onClose }) => {
     setMessage('Đang xử lý...');
 
     try {
-      const response = await fetch('http://localhost:5000/api/change-password', {
+      const response = await fetch('api/change-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

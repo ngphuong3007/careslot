@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Admin.css';
+import { apiRequest, API_BASE } from '../utils/api';
 
 const AdminDoctorManagement = () => {
   const [doctors, setDoctors] = useState([]);
@@ -12,14 +13,11 @@ const AdminDoctorManagement = () => {
 
   const fetchDoctors = async (signal) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('/api/admin/doctors', {
-        headers: { 'Authorization': `Bearer ${token}` },
-        signal,
-      });
-      if (!response.ok) throw new Error('Không thể tải danh sách bác sĩ.');
-      const data = await response.json();
+      // ...existing code...
+      // { changed code } dùng apiRequest thay fetch thô
+      const data = await apiRequest('/api/admin/doctors', { signal });
       setDoctors(data);
+      // ...existing code...
     } catch (err) {
       if (err.name !== 'AbortError') {
         console.error("Lỗi khi tải danh sách bác sĩ:", err);
@@ -71,9 +69,10 @@ const AdminDoctorManagement = () => {
     const method = isEditing ? 'PUT' : 'POST';
 
     try {
+      // { changed code } upload FormData dùng fetch với API_BASE
       const token = localStorage.getItem('token');
-      const response = await fetch(url, {
-        method: method,
+      const response = await fetch(`${API_BASE}${url}`, {
+        method,
         headers: { 'Authorization': `Bearer ${token}` },
         body: formData,
       });
@@ -103,17 +102,11 @@ const AdminDoctorManagement = () => {
       setMessage('');
       setError('');
       try {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`/api/admin/doctors/${doctor.id}/toggle-active`, {
+        // { changed code } dùng apiRequest cho JSON
+        const data = await apiRequest(`/api/admin/doctors/${doctor.id}/toggle-active`, {
           method: 'PUT',
-          headers: { 
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
           body: JSON.stringify({ isActive: newIsActive })
         });
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.message || 'Lỗi khi thực hiện hành động.');
         setMessage(data.message);
         fetchDoctors();
       } catch (error) {
@@ -144,7 +137,8 @@ const AdminDoctorManagement = () => {
         {isEditing && currentDoctor.image_url && !imageFile && (
           <div className="image-preview">
             <p>Ảnh hiện tại:</p>
-            <img src={`http://localhost:5000${currentDoctor.image_url}`} alt={currentDoctor.name} />
+            {/* { changed code } dùng API_BASE thay localhost */}
+            <img src={`${API_BASE}${currentDoctor.image_url}`} alt={currentDoctor.name} />
           </div>
         )}
         <div className="form-actions">
@@ -180,7 +174,8 @@ const AdminDoctorManagement = () => {
               <tr key={doc.id} style={{backgroundColor: doc.is_active ? 'white' : '#f8f9fa'}}>
                 <td>{doc.id}</td>
                 <td>
-                  {doc.image_url && <img src={`http://localhost:5000${doc.image_url}`} alt={doc.name} className="table-avatar" />}
+                  {/* { changed code } dùng API_BASE thay localhost */}
+                  {doc.image_url && <img src={`${API_BASE}${doc.image_url}`} alt={doc.name} className="table-avatar" />}
                 </td>
                 <td>{doc.name}</td>
                 <td>{doc.specialty}</td>

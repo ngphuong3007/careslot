@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './Admin.css';
+import { apiRequest } from '../utils/api';
+
+const apiRequestLocal = apiRequest;
 
 const AdminAppointmentManagement = () => {
   const [appointments, setAppointments] = useState([]);

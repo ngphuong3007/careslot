@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import ChatBox from './ChatBox';
-import io from 'socket.io-client';
+import { socket } from '../socket';
 import { AuthContext } from '../context/AuthContext';
 import './ChatWidget.css';
 
@@ -16,19 +16,16 @@ const getAnonymousId = () => {
 const ChatWidget = () => {
     const { currentUser } = useContext(AuthContext);
     const [isOpen, setIsOpen] = useState(false);
-    const [socket, setSocket] = useState(null);
+    const [sock, setSock] = useState(socket); 
     const identity = currentUser ? { id: currentUser.id } : { anonymousName: getAnonymousId() };
 
     useEffect(() => {
-        const newSocket = io('http://localhost:5000');
-        setSocket(newSocket);
-
-        if (currentUser) {
-            newSocket.emit('user:online', currentUser.id);
-        }
-
-        return () => newSocket.close();
-    }, [currentUser]);
+    if (currentUser) {
+      sock.emit('user:online', currentUser.id);
+    }
+    return () => {
+    };
+  }, [currentUser, sock]);
 
     const openChat = () => setIsOpen(true);
     const closeChat = () => setIsOpen(false);

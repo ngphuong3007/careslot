@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './ChatBox.css';
+import { apiRequest } from '../utils/api';
 
 const GUEST_USER_ID = 9999;
 
@@ -21,7 +22,7 @@ const ChatBox = ({ socket, identity, onClose }) => {
 
     useEffect(() => {
         if (identity.id && !conversation) {
-            fetch(`http://localhost:5000/api/chat/active-conversation`, {
+            fetch(`api/chat/active-conversation`, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             })
                 .then((res) => res.json())
@@ -30,7 +31,7 @@ const ChatBox = ({ socket, identity, onClose }) => {
                         setConversation(activeConv);
                         setStep('chatting');
                         return fetch(
-                            `http://localhost:5000/api/chat/conversations/${activeConv.id}/messages`,
+                            `api/chat/conversations/${activeConv.id}/messages`,
                             { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
                         );
                     }

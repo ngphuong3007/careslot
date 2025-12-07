@@ -2,20 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './DoctorSchedule.css';
-
-// Hàm helper để gọi API
-const apiRequest = async (url, options) => {
-    const token = localStorage.getItem('token');
-    const response = await fetch(`http://localhost:5000${url}`, {
-        ...options,
-        headers: { ...options?.headers, 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-    });
-    if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || `Lỗi HTTP: ${response.status}`);
-    }
-    return response.json();
-};
+import { apiRequest } from '../utils/api';
 
 // Hàm helper để chuyển đổi Date object sang chuỗi YYYY-MM-DD an toàn
 const toDateKey = (date) => {
