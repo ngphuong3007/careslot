@@ -24,7 +24,6 @@ const allowedOrigins = (process.env.CORS_ORIGINS || '').split(',').filter(Boolea
 app.use(cors({ origin: allowedOrigins, credentials: true }));
 
 // --- Middlewares ---
-app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
@@ -38,8 +37,9 @@ const upload = multer({ storage: storage });
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000", // Cho phép client React kết nối
-    methods: ["GET", "POST"]
+    origin: (process.env.SOCKET_ORIGINS || '').split(',').filter(Boolean),
+    methods: ["GET", "POST"],
+    credentials: true
   }
 });
 
