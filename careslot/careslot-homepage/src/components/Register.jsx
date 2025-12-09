@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import './Login.css'; // Tái sử dụng CSS của form Login
+import './Login.css';
+import { apiRequest } from '../utils/api';
 
 // SỬA LẠI TÊN PROP TỪ 'onSwitchToLogin' THÀNH 'onBack'
 const Register = ({ onBack }) => {
@@ -8,33 +9,29 @@ const Register = ({ onBack }) => {
   const [password, setPassword] = useState('');
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
-    if (!username || !email || !password) {
-      alert('Vui lòng điền đầy đủ thông tin.');
-      return;
+  event.preventDefault();
+  if (!username || !email || !password) {
+    alert('Vui lòng điền đầy đủ thông tin.');
+    return;
+  }
+
+  try {
+    const data = await apiRequest('/api/register', {
+      method: 'POST',
+      body: JSON.stringify({ username, email, password }),
+    });
+
+    if (data && data.message) {
+      alert(data.message + "\nBây giờ bạn có thể đăng nhập.");
+      if (onBack) onBack();
+    } else {
+      alert('Đăng ký thành công.');
+      if (onBack) onBack();
     }
-
-    try {
-      // SỬA LẠI ĐƯỜNG DẪN FETCH ĐỂ DÙNG PROXY
-      const response = await fetch('/api/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        alert(data.message + "\nBây giờ bạn có thể đăng nhập.");
-        // SỬA LẠI TÊN HÀM Ở ĐÂY
-        if (onBack) onBack(); // Tự động chuyển về form đăng nhập
-      } else {
-        alert(`Lỗi: ${data.message}`);
-      }
-    } catch (error) {
-      alert('Không thể kết nối đến server.');
-    }
-  };
+  } catch (error) {
+    alert('Không thể kết nối đến server.');
+  }
+};
 
   return (
     <div className="login-container">
