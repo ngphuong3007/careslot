@@ -20,7 +20,7 @@ const AppointmentLookupModal = ({ onClose }) => {
         setSearched(true);
 
         try {
-            const response = await fetch(`/api/public/appointments/lookup?phone=${phone}`);
+            const response = await apiRequest(`/api/public/appointments/lookup?phone=${phone}`);
             const data = await response.json();
             if (!response.ok) {
                 throw new Error(data.message || 'Đã có lỗi xảy ra.');

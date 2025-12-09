@@ -9,25 +9,27 @@ const DoctorSection = ({ currentUser }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchDoctors = async () => {
-      try {
-        setLoading(true);
-        // Sửa lại để gọi đúng port của backend
-        const response = await fetch('api/doctors');
-        if (!response.ok) {
-          throw new Error('Không thể tải dữ liệu bác sĩ.');
-        }
-        const data = await response.json();
-        setDoctors(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchDoctors = async () => {
+    try {
+      setLoading(true);
+      const data = await apiRequest('/api/doctors');
+      setDoctors(data);
+    } catch (err) {
+      setError(err.message || 'Không thể tải dữ liệu bác sĩ.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchDoctors();
-  }, []);
+  fetchDoctors();
+}, []);
+
+// khi hiển thị ảnh, không hard-code localhost
+<img
+  src={`${API_BASE}${doctor.image_url}`}
+  alt={doctor.name}
+  className="doctor-image"
+/>
 
   return (
     <section id="doctors" className="doctor-section">

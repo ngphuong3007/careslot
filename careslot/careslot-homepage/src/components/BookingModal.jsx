@@ -44,8 +44,8 @@ const BookingModal = ({ onClose, currentUser, initialData = {}, isReExam = false
 
     useEffect(() => {
         Promise.all([
-            fetch('api/services').then(res => res.json()),
-            fetch('api/doctors').then(res => res.json())
+            apiRequest('/api/services'),
+            apiRequest('/api/doctors'),
         ])
             .then(([servicesData, doctorsData]) => {
                 setServices(servicesData);
@@ -57,7 +57,7 @@ const BookingModal = ({ onClose, currentUser, initialData = {}, isReExam = false
     useEffect(() => {
         if (currentUser) {
             const token = localStorage.getItem('token');
-            fetch('api/user/dependents', {
+            apiRequest('/api/user/dependents', {
                 headers: { 'Authorization': `Bearer ${token}` }
             })
                 .then(res => res.json())
@@ -95,7 +95,7 @@ const BookingModal = ({ onClose, currentUser, initialData = {}, isReExam = false
             setScheduleLoading(true);
             setSchedule([]);
             setSelectedTime('');
-            fetch(`api/doctors/${selectedDoctor}/schedule?date=${selectedDate}`)
+            apiRequest(`api/doctors/${selectedDoctor}/schedule?date=${selectedDate}`)
                 .then(res => res.json())
                 .then(data => {
                     const sortedData = data.sort((a, b) => new Date(a.time) - new Date(b.time));
@@ -136,7 +136,7 @@ const BookingModal = ({ onClose, currentUser, initialData = {}, isReExam = false
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('api/appointments', {
+            const response = await apiRequest('api/appointments', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

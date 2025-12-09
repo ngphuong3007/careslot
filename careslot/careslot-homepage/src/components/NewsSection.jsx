@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './NewsSection.css';
+import { apiRequest } from '../utils/api';
 
 const RSS_URL = 'https://tuoitre.vn/rss/suc-khoe.rss';
 
@@ -17,7 +18,7 @@ const NewsSection = () => {
 
   useEffect(() => {
     const fetchRSS = async () => {
-      const res = await fetch(
+      const res = await apiRequest(
         `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(RSS_URL)}`
       );
       const data = await res.json();

@@ -14,7 +14,7 @@ const AdminAppointmentManagement = () => {
 
   const apiRequest = async (url, options) => {
     const token = localStorage.getItem('token');
-    const response = await fetch(url, {
+    const response = await apiRequest(url, {
       ...options,
       headers: {
         'Content-Type': 'application/json',

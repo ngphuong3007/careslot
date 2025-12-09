@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './ChatBox.css';
-import { apiRequest } from '../utils/api';
 
 const GUEST_USER_ID = 9999;
 

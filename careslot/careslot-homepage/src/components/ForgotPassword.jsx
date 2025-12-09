@@ -10,27 +10,23 @@ const ForgotPassword = ({ onBack }) => {
 
   // Hàm xử lý khi người dùng nhấn nút "Lấy lại mật khẩu"
   const handleSubmit = async (event) => {
-    event.preventDefault(); // Ngăn trang tải lại
-    if (!email) {
-      setMessage('Vui lòng nhập email của bạn.');
-      return;
-    }
-    setMessage('Đang xử lý, vui lòng chờ...');
+  event.preventDefault();
+  if (!email) {
+    setMessage('Vui lòng nhập email của bạn.');
+    return;
+  }
+  setMessage('Đang xử lý, vui lòng chờ...');
 
-    try {
-      // Gửi yêu cầu đến API /api/forgot-password
-      const response = await fetch('api/forgot-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
-      const data = await response.json();
-      // Hiển thị thông báo trả về từ server
-      setMessage(data.message); 
-    } catch (error) {
-      setMessage('Lỗi kết nối đến server. Vui lòng thử lại.');
-    }
-  };
+  try {
+    const data = await apiRequest('/api/forgot-password', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    });
+    setMessage(data.message || 'Vui lòng kiểm tra email của bạn.');
+  } catch (error) {
+    setMessage('Lỗi kết nối đến server. Vui lòng thử lại.');
+  }
+};
 
   return (
     <div className="login-container">

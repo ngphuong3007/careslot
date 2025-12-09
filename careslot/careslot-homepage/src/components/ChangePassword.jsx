@@ -24,7 +24,7 @@ const ChangePassword = ({ onClose }) => {
     setMessage('Đang xử lý...');
 
     try {
-      const response = await fetch('api/change-password', {
+      const response = await apiRequest('/api/change-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
