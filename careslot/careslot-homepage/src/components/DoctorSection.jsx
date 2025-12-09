@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './DoctorSection.css';
-import { apiRequest } from '../utils/api';
+import { apiRequest, API_BASE } from '../utils/api';
 
 // Nhận prop currentUser từ Home.jsx
 const DoctorSection = ({ currentUser }) => {
@@ -23,13 +23,6 @@ const DoctorSection = ({ currentUser }) => {
 
   fetchDoctors();
 }, []);
-
-// khi hiển thị ảnh, không hard-code localhost
-<img
-  src={`${API_BASE}${doctor.image_url}`}
-  alt={doctor.name}
-  className="doctor-image"
-/>
 
   return (
     <section id="doctors" className="doctor-section">
