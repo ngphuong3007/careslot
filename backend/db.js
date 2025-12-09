@@ -1,3 +1,6 @@
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
+
 const mysql = require('mysql2');
 
 const pool = mysql.createPool({
@@ -8,7 +11,18 @@ const pool = mysql.createPool({
   database: process.env.DB_NAME,
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
+  queueLimit: 0,
+  // Railway MySQL thường yêu cầu SSL
+  ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : undefined
+});
+
+pool.getConnection((err, conn) => {
+  if (err) {
+    console.error('[MySQL] connect error:', err.code, err.message);
+  } else {
+    conn.release();
+    console.log('[MySQL] pool ready');
+  }
 });
 
 module.exports = pool.promise();
