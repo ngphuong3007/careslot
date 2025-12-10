@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import './Login.css';
-
-const API_BASE =
-  process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+import { apiRequest } from '../utils/api';
 
 const Login = ({ onForgotPasswordClick, onRegisterClick, onLoginSuccess }) => {
   const [username, setUsername] = useState('');
@@ -16,29 +14,17 @@ const Login = ({ onForgotPasswordClick, onRegisterClick, onLoginSuccess }) => {
     }
 
     try {
-      const response = await fetch(`${API_BASE}/api/login`, {
+      const data = await apiRequest('/api/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({ username, password }),
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        // XÓA BỎ: Không cần lưu token ở đây nữa, AuthContext sẽ làm việc đó.
-        // localStorage.setItem('token', data.token);
-        if (onLoginSuccess) {
-          // SỬA LẠI: Truyền cả token lên cho App.jsx xử lý
-          onLoginSuccess(data.token);
-        }
-      } else {
-        alert(`Lỗi: ${data.message}`);
+      if (onLoginSuccess) {
+        onLoginSuccess(data.token);
       }
     } catch (error) {
-      console.error("Login error:", error);
-      alert('Không thể kết nối đến server.');
+      console.error('Login error:', error);
+      alert(error.message || 'Không thể kết nối đến server.');
     }
   };
 

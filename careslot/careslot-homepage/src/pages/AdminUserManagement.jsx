@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Admin.css';
+import { apiRequest } from '../utils/api'; 
 
 const AdminUserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -9,40 +10,28 @@ const AdminUserManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
+  const controller = new AbortController();
+  const signal = controller.signal;
 
-    const fetchUsers = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        setMessage('');
-        const token = localStorage.getItem('token');
-        const response = await fetch('/api/admin/users', {
-          headers: { 'Authorization': `Bearer ${token}` },
-          signal
-        });
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Không thể tải danh sách người dùng.');
-        }
-        const data = await response.json();
-        setUsers(data);
-      } catch (err) {
-        if (err.name !== 'AbortError') {
-          setError(err.message);
-        }
-      } finally {
-        setLoading(false);
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      setMessage('');
+      const data = await apiRequest('/api/admin/users', { signal });
+      setUsers(data);
+    } catch (err) {
+      if (err.name !== 'AbortError') {
+        setError(err.message);
       }
-    };
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchUsers();
-    
-    return () => { 
-      controller.abort(); 
-    };
-  }, []);
+  fetchUsers();
+  return () => { controller.abort(); };
+}, []);
 
   const handleRoleChange = async (userId, newRole) => {
     const originalUsers = [...users];
@@ -55,13 +44,9 @@ const AdminUserManagement = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`/api/admin/users/${userId}`, {
+      const response = await apiRequest(`/api/admin/users/${userId}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ role: newRole })
+        body: JSON.stringify({ role: newRole }),
       });
 
       const data = await response.json();
@@ -79,7 +64,7 @@ const AdminUserManagement = () => {
     if (window.confirm(`Bạn có chắc muốn gửi email reset mật khẩu cho ${userEmail}?`)) {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`/api/admin/users/${userId}/reset-password`, {
+        const response = await apiRequest(`/api/admin/users/${userId}/reset-password`, {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -96,7 +81,7 @@ const AdminUserManagement = () => {
     if (window.confirm(`Bạn có chắc chắn muốn xóa người dùng "${username}"?`)) {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`/api/admin/users/${userId}`, {
+        const response = await apiRequest(`/api/admin/users/${userId}`, {
           method: 'DELETE',
           headers: { 'Authorization': `Bearer ${token}` }
         });

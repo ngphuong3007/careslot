@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Admin.css';
+import { apiRequest } from '../utils/api';
 
 const AdminServiceManagement = () => {
   const [services, setServices] = useState([]);
@@ -8,23 +9,6 @@ const AdminServiceManagement = () => {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-
-  const apiRequest = async (url, options) => {
-    const token = localStorage.getItem('token');
-    const response = await fetch(url, {
-      ...options,
-      headers: {
-        ...options?.headers,
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || `Lỗi HTTP: ${response.status}`);
-    }
-    return response.json();
-  };
 
   const fetchServices = async (signal) => {
     try {

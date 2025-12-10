@@ -95,7 +95,6 @@ const BookingModal = ({ onClose, currentUser, initialData = {}, isReExam = false
             setSchedule([]);
             setSelectedTime('');
             apiRequest(`/api/doctors/${selectedDoctor}/schedule?date=${selectedDate}`)
-                .then(res => res.json())
                 .then(data => {
                     const sortedData = data.sort((a, b) => new Date(a.time) - new Date(b.time));
                     setSchedule(sortedData);
@@ -135,7 +134,7 @@ const BookingModal = ({ onClose, currentUser, initialData = {}, isReExam = false
 
         try {
             const token = localStorage.getItem('token');
-            const response = await apiRequest('api/appointments', {
+            const response = await apiRequest('/api/appointments', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

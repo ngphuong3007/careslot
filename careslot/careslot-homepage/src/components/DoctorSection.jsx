@@ -45,7 +45,7 @@ const DoctorSection = ({ currentUser }) => {
                   // Thêm class 'current-user-doctor' nếu là bác sĩ đang đăng nhập
                   <div key={doctor.id} className={`doctor-card ${isCurrentUser ? 'current-user-doctor' : ''}`}>
                     <img 
-                      src={`http://localhost:5000${doctor.image_url}`} 
+                      src={`${API_BASE}${doctor.image_url}`} 
                       alt={doctor.name} 
                       className="doctor-image" 
                     />
