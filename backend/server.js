@@ -312,14 +312,27 @@ app.post('/api/change-password', verifyToken, async (req, res) => {
 // === API CHO NGƯỜI DÙNG (USER) ===================
 // ==================================================
 app.get('/api/user/profile', verifyToken, async (req, res) => {
-    try {
+  try {
     const [rows] = await db.query(
-      'SELECT id, username, email, role, full_name, phone, gender, dob, address FROM users WHERE id = ?',
+      `SELECT
+         id,
+         username,
+         email,
+         role,
+         full_name,
+         phone,
+         gender,
+         DATE_FORMAT(date_of_birth, '%Y-%m-%d') AS date_of_birth,
+         address
+       FROM users
+       WHERE id = ?`,
       [req.user.id]
     );
+
     if (rows.length === 0) {
       return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
     }
+
     res.json(rows[0]);
   } catch (err) {
     console.error('[/api/user/profile] error:', err);
@@ -1005,72 +1018,125 @@ app.delete('/api/user/dependents/:id', verifyToken, async (req, res) => {
 
 app.get('/api/admin/dashboard-metrics', verifyToken, isAdmin, async (req, res) => {
   try {
-    const { range = 'week' } = req.query; // Lấy tham số range, mặc định là 'week'
+    const { range = 'week' } = req.query;
 
-    let intervalDays;
-    let dateFormat;
-    let groupByFormat;
+    const now = new Date();
+    let start = new Date(now);
 
-    switch (range) {
-      case 'day':
-        intervalDays = 1;
-        dateFormat = '%H:00'; // Nhóm theo giờ trong ngày
-        groupByFormat = 'HOUR(a.appointment_time)';
-        break;
-      case 'month':
-        intervalDays = 30;
-        dateFormat = '%Y-%m-%d'; // Nhóm theo ngày trong tháng
-        groupByFormat = 'DATE(a.appointment_time)';
-        break;
-      default: // 'week'
-        intervalDays = 7;
-        dateFormat = '%Y-%m-%d'; // Nhóm theo ngày trong tuần
-        groupByFormat = 'DATE(a.appointment_time)';
-        break;
+    if (range === 'day') {
+      // đầu ngày hôm nay
+      start.setHours(0, 0, 0, 0);
+    } else if (range === 'week') {
+      // Thứ 2 đầu tuần hiện tại
+      const day = start.getDay(); // 0 CN, 1 T2...
+      const diff = start.getDate() - day + (day === 0 ? -6 : 1);
+      start = new Date(start.setDate(diff));
+      start.setHours(0, 0, 0, 0);
+    } else if (range === 'month') {
+      // ngày 1 của tháng hiện tại
+      start = new Date(start.getFullYear(), start.getMonth(), 1);
+    } else {
+      return res.status(400).json({ message: 'range không hợp lệ' });
     }
 
-    const [revenueRows] = await db.query(`
-      SELECT DATE_FORMAT(a.appointment_time, ?) as label, SUM(s.price) as value
-      FROM appointments a
-      JOIN services s ON a.service_id = s.id
-      WHERE a.status = 'completed' AND a.appointment_time >= DATE_SUB(CURDATE(), INTERVAL ? DAY)
-      GROUP BY ${groupByFormat}
-      ORDER BY ${groupByFormat} ASC;
-    `, [dateFormat, intervalDays]);
+    const toMySQLDateTime = (d) =>
+      d.toISOString().slice(0, 19).replace('T', ' ');
 
-    const [newAppointmentsRows] = await db.query(`
-      SELECT COUNT(*) as count FROM appointments WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL ? DAY);
-    `, [intervalDays]);
+    const startStr = toMySQLDateTime(start);
 
-    // ... các câu query còn lại không đổi ...
-    const [cancelRateRows] = await db.query(`
-      SELECT (SUM(CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END) / COUNT(*)) * 100 as rate FROM appointments;
-    `);
-    const [bestDoctorRows] = await db.query(`
-      SELECT d.name, SUM(s.price) as revenue
-      FROM appointments a JOIN services s ON a.service_id = s.id JOIN doctors d ON a.doctor_id = d.id
-      WHERE a.status = 'completed' GROUP BY d.id, d.name ORDER BY revenue DESC LIMIT 1;
-    `);
-    const [bestServiceRows] = await db.query(`
-      SELECT s.name, SUM(s.price) as revenue
-      FROM appointments a JOIN services s ON a.service_id = s.id
-      WHERE a.status = 'completed' GROUP BY s.id, s.name ORDER BY revenue DESC LIMIT 1;
-    `);
+    // 1. Doanh thu theo ngày (chỉ confirmed + completed)
+    const [revenueRows] = await db.query(
+      `SELECT
+         DATE(a.appointment_time) AS label,
+         SUM(s.price) AS value
+       FROM appointments a
+       JOIN services s ON a.service_id = s.id
+       WHERE a.appointment_time >= ?
+         AND a.status IN ('confirmed','completed')
+       GROUP BY DATE(a.appointment_time)
+       ORDER BY DATE(a.appointment_time)`,
+      [startStr]
+    );
 
-    const formattedRevenue = revenueRows.map(item => ({ ...item, value: Number(item.value) }));
-    const bestDoctor = bestDoctorRows.length ? { ...bestDoctorRows[0], revenue: Number(bestDoctorRows[0].revenue) } : null;
-    const bestService = bestServiceRows.length ? { ...bestServiceRows[0], revenue: Number(bestServiceRows[0].revenue) } : null;
+    // 2. Số lịch hẹn mới (dựa vào created_at)
+    const [[newAppsRow]] = await db.query(
+      `SELECT COUNT(*) AS cnt
+       FROM appointments
+       WHERE created_at >= ?`,
+      [startStr]
+    );
+    const newAppointments = newAppsRow?.cnt || 0;
+
+    // 3. Tỉ lệ hủy trong khoảng thời gian
+    const [[cancelRow]] = await db.query(
+      `SELECT
+         COUNT(*) AS total,
+         SUM(CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END) AS cancelled
+       FROM appointments
+       WHERE appointment_time >= ?`,
+      [startStr]
+    );
+
+    let cancelRate = 0;
+    if (cancelRow.total > 0) {
+      cancelRate = Math.round(
+        ((cancelRow.cancelled || 0) * 100) / cancelRow.total
+      );
+    }
+
+    // 4. Bác sĩ doanh thu cao nhất
+    const [bestDoctorRows] = await db.query(
+      `SELECT
+         d.id,
+         d.name,
+         SUM(s.price) AS revenue
+       FROM appointments a
+       JOIN doctors d  ON a.doctor_id = d.id
+       JOIN services s ON a.service_id = s.id
+       WHERE a.appointment_time >= ?
+         AND a.status IN ('confirmed','completed')
+       GROUP BY d.id, d.name
+       ORDER BY revenue DESC
+       LIMIT 1`,
+      [startStr]
+    );
+    const bestDoctor = bestDoctorRows.length
+      ? { ...bestDoctorRows[0], revenue: Number(bestDoctorRows[0].revenue) }
+      : null;
+
+    // 5. Dịch vụ doanh thu cao nhất
+    const [bestServiceRows] = await db.query(
+      `SELECT
+         s.id,
+         s.name,
+         SUM(s.price) AS revenue
+       FROM appointments a
+       JOIN services s ON a.service_id = s.id
+       WHERE a.appointment_time >= ?
+         AND a.status IN ('confirmed','completed')
+       GROUP BY s.id, s.name
+       ORDER BY revenue DESC
+       LIMIT 1`,
+      [startStr]
+    );
+    const bestService = bestServiceRows.length
+      ? { ...bestServiceRows[0], revenue: Number(bestServiceRows[0].revenue) }
+      : null;
+
+    const formattedRevenue = revenueRows.map((row) => ({
+      label: row.label,
+      value: Number(row.value || 0),
+    }));
 
     res.json({
       revenue: formattedRevenue,
-      newAppointments: newAppointmentsRows[0]?.count || 0,
-      cancelRate: Number(cancelRateRows[0]?.rate || 0).toFixed(2),
-      bestDoctor: bestDoctor,
-      bestService: bestService,
+      newAppointments,
+      cancelRate,
+      bestDoctor,
+      bestService,
     });
-
   } catch (error) {
-    console.error("Lỗi lấy số liệu dashboard:", error);
+    console.error('[/api/admin/dashboard-metrics] error:', error);
     res.status(500).json({ message: 'Lỗi server khi lấy số liệu dashboard.' });
   }
 });

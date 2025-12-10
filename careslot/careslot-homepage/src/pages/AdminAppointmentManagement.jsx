@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import './Admin.css';
 import { apiRequest } from '../utils/api';
 
-const apiRequestLocal = apiRequest;
-
 const AdminAppointmentManagement = () => {
   const [appointments, setAppointments] = useState([]);
   const [doctors, setDoctors] = useState([]);
@@ -12,26 +10,9 @@ const AdminAppointmentManagement = () => {
   const [message, setMessage] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
 
-  const apiRequest = async (url, options) => {
-    const token = localStorage.getItem('token');
-    const response = await apiRequest(url, {
-      ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-        ...options?.headers,
-      },
-    });
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Có lỗi xảy ra.');
-    }
-    return response.json();
-  };
-
   useEffect(() => {
     const controller = new AbortController();
-    const signal = controller.signal;
+    const { signal } = controller;
 
     const fetchData = async () => {
       try {
@@ -39,7 +20,7 @@ const AdminAppointmentManagement = () => {
         setError(null);
         const [appointmentsData, doctorsData] = await Promise.all([
           apiRequest('/api/admin/appointments', { signal }),
-          apiRequest('/api/admin/doctors', { signal })
+          apiRequest('/api/admin/doctors', { signal }),
         ]);
         setAppointments(appointmentsData);
         setDoctors(doctorsData);
@@ -53,29 +34,28 @@ const AdminAppointmentManagement = () => {
     };
 
     fetchData();
-
-    return () => {
-      controller.abort();
-    };
+    return () => controller.abort();
   }, []);
 
   const handleUpdateAppointment = async (id, field, value) => {
     const updateValue = value === '' ? null : value;
     const originalAppointments = [...appointments];
-    
-    // Cập nhật UI ngay lập tức để người dùng thấy thay đổi
-    setAppointments(prev => prev.map(app => {
+
+    setAppointments((prev) =>
+      prev.map((app) => {
         if (app.id === id) {
-            const updatedApp = { ...app, [field]: updateValue };
-            // Nếu thay đổi bác sĩ, cập nhật luôn doctor_name trên UI để logic filter hoạt động
-            if (field === 'doctor_id') {
-                const selectedDoc = doctors.find(d => d.id === parseInt(updateValue));
-                updatedApp.doctor_name = selectedDoc ? selectedDoc.name : null;
-            }
-            return updatedApp;
+          const updatedApp = { ...app, [field]: updateValue };
+          if (field === 'doctor_id') {
+            const selectedDoc = doctors.find(
+              (d) => d.id === parseInt(updateValue)
+            );
+            updatedApp.doctor_name = selectedDoc ? selectedDoc.name : null;
+          }
+          return updatedApp;
         }
         return app;
-    }));
+      })
+    );
     setMessage('');
 
     try {
@@ -87,7 +67,7 @@ const AdminAppointmentManagement = () => {
       setMessage(data.message);
     } catch (err) {
       setError(`Lỗi: ${err.message}`);
-      setAppointments(originalAppointments); // Hoàn tác nếu có lỗi
+      setAppointments(originalAppointments);
     }
   };
 
