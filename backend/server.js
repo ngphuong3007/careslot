@@ -313,12 +313,18 @@ app.post('/api/change-password', verifyToken, async (req, res) => {
 // ==================================================
 app.get('/api/user/profile', verifyToken, async (req, res) => {
     try {
-        const [users] = await db.query('SELECT id, username, full_name, date_of_birth, gender, address, email, phone FROM users WHERE id = ?', [req.user.id]);
-        if (users.length === 0) return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
-        res.json(users[0]);
-    } catch (error) {
-        res.status(500).json({ message: 'Lỗi máy chủ' });
+    const [rows] = await db.query(
+      'SELECT id, username, email, role, full_name, phone, gender, dob, address FROM users WHERE id = ?',
+      [req.user.id]
+    );
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
     }
+    res.json(rows[0]);
+  } catch (err) {
+    console.error('[/api/user/profile] error:', err);
+    res.status(500).json({ message: 'Lỗi server khi lấy thông tin người dùng.' });
+  }
 });
 
 app.put('/api/user/profile', verifyToken, async (req, res) => {
@@ -484,10 +490,13 @@ app.post('/api/appointments', async (req, res) => {
 // ==================================================
 app.get('/api/admin/users', verifyToken, isAdmin, async (req, res) => {
   try {
-    const [rows] = await db.query('SELECT id, username, email, role FROM users');
+    const [rows] = await db.query(
+      'SELECT id, username, email, role, full_name, phone FROM users'
+    );
     res.json(rows);
-  } catch (error) {
-    res.status(500).json({ message: 'Lỗi server' });
+  } catch (err) {
+    console.error('[/api/admin/users] error:', err);
+    res.status(500).json({ message: 'Lỗi server khi lấy danh sách người dùng.' });
   }
 });
 

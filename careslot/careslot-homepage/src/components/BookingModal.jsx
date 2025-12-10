@@ -60,7 +60,6 @@ const BookingModal = ({ onClose, currentUser, initialData = {}, isReExam = false
             apiRequest('/api/user/dependents', {
                 headers: { 'Authorization': `Bearer ${token}` }
             })
-                .then(res => res.json())
                 .then(data => {
                     if (Array.isArray(data)) setDependents(data);
                 })
@@ -95,7 +94,7 @@ const BookingModal = ({ onClose, currentUser, initialData = {}, isReExam = false
             setScheduleLoading(true);
             setSchedule([]);
             setSelectedTime('');
-            apiRequest(`api/doctors/${selectedDoctor}/schedule?date=${selectedDate}`)
+            apiRequest(`/api/doctors/${selectedDoctor}/schedule?date=${selectedDate}`)
                 .then(res => res.json())
                 .then(data => {
                     const sortedData = data.sort((a, b) => new Date(a.time) - new Date(b.time));
