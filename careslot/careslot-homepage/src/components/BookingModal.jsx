@@ -134,24 +134,22 @@ const BookingModal = ({ onClose, currentUser, initialData = {}, isReExam = false
 
         try {
             const token = localStorage.getItem('token');
-            const response = await apiRequest('/api/appointments', {
+            // apiRequest trả thẳng JSON (result), không phải Response
+            const result = await apiRequest('/api/appointments', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${token}`,
                 },
                 body: JSON.stringify(bookingData),
             });
-            const result = await response.json();
-            if (response.ok) {
-                alert('Đặt lịch thành công!');
-                onClose();
-            } else {
-                alert(`Đặt lịch thất bại: ${result.message}`);
-            }
+
+            // Nếu backend trả message
+            alert(result.message || 'Đặt lịch thành công!');
+            onClose();
         } catch (error) {
             console.error('Lỗi khi gửi yêu cầu đặt lịch:', error);
-            alert('Không thể kết nối đến máy chủ. Vui lòng thử lại sau.');
+            alert(error.message || 'Không thể kết nối đến máy chủ. Vui lòng thử lại sau.');
         }
     };
 
