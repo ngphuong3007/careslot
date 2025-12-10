@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import './Login.css';
 
+const API_BASE =
+  process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+
 const Login = ({ onForgotPasswordClick, onRegisterClick, onLoginSuccess }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -13,7 +16,7 @@ const Login = ({ onForgotPasswordClick, onRegisterClick, onLoginSuccess }) => {
     }
 
     try {
-      const response = await fetch('/api/login', {
+      const response = await fetch(`${API_BASE}/api/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
