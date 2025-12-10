@@ -27,7 +27,7 @@ const StaffChatPage = () => {
 
     // Kết nối socket và load danh sách cuộc trò chuyện
     useEffect(() => {
-        setSocket(newSocket);
+        setSocket(sharedSocket);
         if (currentUser) {
             sharedSocket.emit('user:online', currentUser.id);
         }
@@ -70,7 +70,7 @@ const StaffChatPage = () => {
     const selectConversation = (conv) => {
         setActiveConversation(conv);
         setMessages([]);
-        fetch(`api/chat/conversations/${conv.id}/messages`, {
+        fetch(`${API_BASE}/api/chat/conversations/${conv.id}/messages`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         })
             .then((res) => res.json())
@@ -81,9 +81,6 @@ const StaffChatPage = () => {
         e.preventDefault();
         if (inputValue.trim() === '' || !activeConversation || !socket) return;
 
-        const receiverId = activeConversation.user_id;
-        if (!receiverId && !activeConversation.anonymous_name) return;
-
         const message = {
             conversationId: activeConversation.id,
             senderId: currentUser.id,
@@ -92,7 +89,6 @@ const StaffChatPage = () => {
         };
 
         socket.emit('chat:send_message', message);
-        // Không tự push, để server bắn lại chat:receive_message
         setInputValue('');
     };
 

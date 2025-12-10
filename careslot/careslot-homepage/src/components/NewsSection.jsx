@@ -2,7 +2,10 @@ import React, { useEffect, useState } from 'react';
 import './NewsSection.css';
 import { apiRequest } from '../utils/api';
 
-const RSS_URL = 'https://tuoitre.vn/rss/suc-khoe.rss';
+const RSS_URL =
+  'https://api.rss2json.com/v1/api.json?rss_url=' +
+  encodeURIComponent('https://tuoitre.vn/rss/suc-khoe.rss');
+
 
 // Hàm lấy ảnh ưu tiên thumbnail, nếu không có thì lấy enclosure.url hoặc enclosure.link
 const getImage = (item) => {
@@ -18,11 +21,14 @@ const NewsSection = () => {
 
   useEffect(() => {
     const fetchRSS = async () => {
-      const res = await apiRequest(
-        `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(RSS_URL)}`
-      );
-      const data = await res.json();
-      setItems(data.items || []);
+      try {
+        const res = await fetch(RSS_URL);
+        if (!res.ok) throw new Error('RSS request failed');
+        const data = await res.json();
+        setItems(data.items || []);
+      } catch (err) {
+        console.error('Lỗi tải RSS:', err);
+      }
     };
     fetchRSS();
   }, []);

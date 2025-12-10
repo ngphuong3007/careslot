@@ -13,7 +13,9 @@ const pool = mysql.createPool({
   connectionLimit: 10,
   queueLimit: 0,
   // Railway MySQL thường yêu cầu SSL
-  ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : undefined
+  ssl: process.env.DB_SSL === 'true' ? {
+        rejectUnauthorized: false 
+    } : false
 });
 
 pool.getConnection((err, conn) => {
