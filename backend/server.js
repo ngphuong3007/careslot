@@ -31,17 +31,7 @@ const allowedOrigins = (
   .filter(Boolean);
 
 const corsOptions = {
-  origin: (origin, callback) => {
-    // request server‑to‑server hoặc same‑origin (Render) => cho qua
-    if (!origin) return callback(null, true);
-
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-
-    console.log('CORS blocked origin:', origin);
-    return callback(new Error('Not allowed by CORS'));
-  },
+  origin: allowedOrigins,
   credentials: true,
 };
 
