@@ -191,3 +191,10 @@
     font-size: 0.8rem;
     cursor: pointer;
 }
+@media (max-width: 768px) {
+  .chat-box {
+    width: 100vw;
+    height: 70vh;
+    border-radius: 0;
+  }
+}

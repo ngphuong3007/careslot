@@ -181,3 +181,19 @@
     flex-grow: 1; /* Lấp đầy không gian còn lại */
     overflow-y: auto; /* Hiển thị thanh cuộn khi cần */
 }
+
+@media (max-width: 768px) {
+  .staff-chat-layout {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .conversation-list {
+    width: 100%;
+    height: 250px;
+  }
+
+  .chat-panel {
+    padding: 8px 12px;
+  }
+}

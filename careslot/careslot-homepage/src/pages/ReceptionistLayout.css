@@ -52,3 +52,24 @@
     margin-left: 240px; /* Bằng chiều rộng của sidebar */
     margin-top: 80px; /* Bằng chiều cao của header */
 }
+@media (max-width: 768px) {
+  .receptionist-layout-container {
+    flex-direction: column;
+  }
+
+  .receptionist-sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+    padding: 16px;
+    padding-top: 72px; /* nếu cần trừ header */
+    border-right: none;
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  .receptionist-main-content {
+    margin-left: 0;
+    margin-top: 0;
+    padding: 16px;
+  }
+}

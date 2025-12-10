@@ -178,3 +178,18 @@
     min-height: 0;  
     overflow-y: auto;
 }
+
+@media (max-width: 768px) {
+  .patient-management {
+    padding: 12px;
+    height: auto;
+  }
+
+  .patient-layout {
+    flex-direction: column;
+  }
+
+  .patient-list-container {
+    flex: 1 1 auto;
+  }
+}

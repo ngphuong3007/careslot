@@ -272,3 +272,20 @@
   cursor: pointer;
   background-color: #e9f5ff;
 }
+@media (max-width: 768px) {
+  .admin-container {
+    margin: 1rem auto;
+    padding: 1rem;
+  }
+
+  .admin-dashboard {
+    flex-direction: column;
+    padding: 0 1rem;
+  }
+
+  .admin-sidebar {
+    position: static;
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+}
