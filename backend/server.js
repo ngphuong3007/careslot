@@ -22,8 +22,31 @@ const port = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'careslot_12345';
 const GUEST_USER_ID = 9999;
 
-const allowedOrigins = (process.env.CORS_ORIGINS || '').split(',').filter(Boolean);
-app.use(cors({ origin: allowedOrigins, credentials: true }));
+const allowedOrigins = (
+  process.env.CORS_ORIGINS ||
+  'http://localhost:3000,https://careslot.vercel.app'
+)
+  .split(',')
+  .map(o => o.trim())
+  .filter(Boolean);
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // request server‑to‑server hoặc same‑origin (Render) => cho qua
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    console.log('CORS blocked origin:', origin);
+    return callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 // --- Middlewares ---
 app.use(express.json());
@@ -39,10 +62,10 @@ const upload = multer({ storage: storage });
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: (process.env.SOCKET_ORIGINS || '').split(',').filter(Boolean),
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
-    credentials: true
-  }
+    credentials: true,
+  },
 });
 
 // Lưu trữ người dùng đang online { userId: socketId }
