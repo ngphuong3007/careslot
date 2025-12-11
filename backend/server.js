@@ -514,7 +514,20 @@ app.get('/api/public/appointments/lookup', async (req, res) => {
     const { phone } = req.query;
     if (!phone) return res.status(400).json({ message: 'Vui lòng cung cấp số điện thoại để tra cứu.' });
     try {
-        const query = `SELECT a.id, a.patient_name, a.appointment_time, a.status, s.name AS service_name, d.name AS doctor_name FROM appointments a JOIN services s ON a.service_id = s.id JOIN doctors d ON a.doctor_id = d.id WHERE a.patient_phone = ? ORDER BY a.appointment_time DESC`;
+        const query = `
+          SELECT 
+            a.id,
+            a.patient_name,
+            DATE_FORMAT(a.appointment_time, '%Y-%m-%d %H:%i:%s') AS appointment_time,
+            a.status,
+            s.name AS service_name,
+            d.name AS doctor_name
+          FROM appointments a
+          JOIN services s ON a.service_id = s.id
+          JOIN doctors d ON a.doctor_id = d.id
+          WHERE a.patient_phone = ?
+          ORDER BY a.appointment_time DESC
+        `;
         const [appointments] = await db.query(query, [phone]);
         res.json(appointments);
     } catch (error) {
