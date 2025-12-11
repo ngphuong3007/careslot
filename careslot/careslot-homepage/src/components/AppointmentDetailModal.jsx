@@ -92,7 +92,7 @@ const AppointmentDetailModal = ({ appointmentId, onClose, onSaveSuccess }) => {
 
     return (
         <>
-            <div className="modal-overlay" onClick={onClose}>
+            <div className="modal-overlay">
                 <div className="modal-content appointment-detail-modal" onClick={e => e.stopPropagation()}>
                     <button className="close-button" onClick={onClose}>×</button>
                     <h2>Chi tiết lịch hẹn</h2>

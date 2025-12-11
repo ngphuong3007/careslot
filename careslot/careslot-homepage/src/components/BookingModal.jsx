@@ -156,8 +156,15 @@ const BookingModal = ({ onClose, currentUser, initialData = {}, isReExam = false
     const isPatientInfoLocked = isReExam || (currentUser && bookingFor !== 'self' && bookingFor !== '');
 
     return (
-        <div className="modal-overlay" onClick={onClose}>
+        <div className="modal-overlay">
             <div className="modal-content" onClick={e => e.stopPropagation()}>
+                <button
+                    type="button"
+                    className="close-button"
+                    onClick={onClose}
+                >
+                    ×
+                </button>
                 <h2>{isReExam ? 'Đặt Lịch Tái Khám' : 'Đặt Lịch Khám'}</h2>
                 <form onSubmit={handleSubmit}>
                     {currentUser && !isReExam && (

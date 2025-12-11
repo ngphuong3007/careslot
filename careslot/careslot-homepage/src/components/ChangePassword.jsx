@@ -24,49 +24,88 @@ const ChangePassword = ({ onClose }) => {
     setMessage('Đang xử lý...');
 
     try {
-      const response = await apiRequest('/api/change-password', {
+      // apiRequest đã trả thẳng JSON
+      const data = await apiRequest('/api/change-password', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` // Gửi token để xác thực
-        },
         body: JSON.stringify({ currentPassword, newPassword }),
       });
 
-      const data = await response.json();
-      setMessage(data.message);
+      setMessage(data.message || 'Đổi mật khẩu thành công.');
 
-      if (response.ok) {
+      if (onClose) {
         setTimeout(() => {
-          onClose(); // Đóng modal sau khi thành công
+          onClose();
         }, 2000);
       }
     } catch (error) {
-      setMessage('Lỗi kết nối đến server.');
+      setMessage(error.message || 'Lỗi kết nối đến server.');
     }
   };
 
   return (
-    <div className="login-container">
-      <h2 className="login-title">Đổi Mật Khẩu</h2>
-      <form className="login-form" onSubmit={handleSubmit}>
-        <div className="login-row">
-          <label htmlFor="currentPassword">Mật khẩu hiện tại</label>
-          <input type="password" id="currentPassword" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} required />
+    <div className="modal-overlay">
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="login-container">
+          {onClose && (
+            <button
+              type="button"
+              className="close-button"
+              onClick={onClose}
+            >
+              ×
+            </button>
+          )}
+
+          <h2 className="login-title">Đổi Mật Khẩu</h2>
+          <form className="login-form" onSubmit={handleSubmit}>
+            <div className="login-row">
+              <label htmlFor="currentPassword">Mật khẩu hiện tại</label>
+              <input
+                type="password"
+                id="currentPassword"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                required
+              />
+            </div>
+            <div className="login-row">
+              <label htmlFor="newPassword">Mật khẩu mới</label>
+              <input
+                type="password"
+                id="newPassword"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                required
+              />
+            </div>
+            <div className="login-row">
+              <label htmlFor="confirmPassword">Xác nhận mật khẩu mới</label>
+              <input
+                type="password"
+                id="confirmPassword"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
+            </div>
+            {message && (
+              <p
+                style={{
+                  color: message.includes('thành công') ? 'green' : 'red',
+                  textAlign: 'center',
+                }}
+              >
+                {message}
+              </p>
+            )}
+            <div className="login-actions" style={{ justifyContent: 'center' }}>
+              <button type="submit" className="login-btn">
+                Xác nhận
+              </button>
+            </div>
+          </form>
         </div>
-        <div className="login-row">
-          <label htmlFor="newPassword">Mật khẩu mới</label>
-          <input type="password" id="newPassword" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required />
-        </div>
-        <div className="login-row">
-          <label htmlFor="confirmPassword">Xác nhận mật khẩu mới</label>
-          <input type="password" id="confirmPassword" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
-        </div>
-        {message && <p style={{ color: message.includes('thành công') ? 'green' : 'red', textAlign: 'center' }}>{message}</p>}
-        <div className="login-actions" style={{ justifyContent: 'center' }}>
-          <button type="submit" className="login-btn">Xác nhận</button>
-        </div>
-      </form>
+      </div>
     </div>
   );
 };

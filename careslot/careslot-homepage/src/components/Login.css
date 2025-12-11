@@ -89,7 +89,7 @@
     background: #1da1f2;
     color: #fff;
     border: none;
-    border-radius: 8px;
+    border-radius: 999px;
     padding: 12px 24px;
     font-size: 1rem;
     font-weight: 600;
@@ -111,4 +111,32 @@
   color: #007bff;
   text-decoration: none;
   font-weight: bold;
+}
+
+.modal-content {
+  position: relative;
+}
+
+.login-container {
+  position: relative;     
+}
+
+.close-button {
+position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  width: auto;
+  height: auto;
+
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.close-button:focus {
+  outline: none;
 }

@@ -61,12 +61,7 @@ function App() {
   const [isBookingModalOpen, setBookingModalOpen] = useState(false);
   const [isUserMenuModalOpen, setUserMenuModalOpen] = useState(false);
   const [isLookupModalOpen, setLookupModalOpen] = useState(false);
-
-  // XÓA BỎ: Toàn bộ khối useEffect và handleLogout cũ ở đây
-  // useEffect(() => { ... });
-  // const handleLogout = () => { ... };
-
-  // SỬA LẠI: Hàm này nhận token và gọi hàm updateUser từ context
+  
   const handleLoginSuccess = (token) => {
     updateUser(token);
     setAuthModalView(null);
@@ -106,12 +101,38 @@ function App() {
   return (
     <Router>
       {authModalView && (
-        <div className="modal-overlay" onClick={closeAuthModal}>
+        <div className="modal-overlay">
           <div className="modal-content" onClick={e => e.stopPropagation()}>
-            {authModalView === 'login' && <Login onLoginSuccess={handleLoginSuccess} onRegisterClick={() => setAuthModalView('register')} onForgotPasswordClick={() => setAuthModalView('forgotPassword')} />}
-            {authModalView === 'register' && <Register onBack={() => setAuthModalView('login')} />}
-            {authModalView === 'forgotPassword' && <ForgotPassword onBack={() => setAuthModalView('login')} />}
-            {authModalView === 'changePassword' && <ChangePassword onClose={closeAuthModal} />}
+            {authModalView === 'login' && (
+        <Login
+          onLoginSuccess={handleLoginSuccess}
+          onRegisterClick={() => setAuthModalView('register')}
+          onForgotPasswordClick={() => setAuthModalView('forgotPassword')}
+          onClose={closeAuthModal}
+        />
+      )}
+      {authModalView === 'register' && (
+        <Register
+          onBack={() => setAuthModalView('login')}
+          onClose={closeAuthModal}
+        />
+      )}
+      {authModalView === 'forgotPassword' && (
+        <ForgotPassword
+          onBack={() => setAuthModalView('login')}
+          onClose={closeAuthModal}
+        />
+      )}
+      {authModalView === 'changePassword' && (
+        <ChangePassword onClose={closeAuthModal} />
+      )}
+
+      {isBookingModalOpen && (
+        <BookingModal
+          onClose={() => setBookingModalOpen(false)}
+          currentUser={currentUser}
+        />
+      )}
           </div>
         </div>
       )}
