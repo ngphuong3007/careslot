@@ -56,7 +56,7 @@ const ForgotPassword = ({ onBack }) => {
           <button type="button" className="login-btn" onClick={onBack}>
             Quay lại
           </button>
-          <button type="submit" className="login-btn" style={{marginLeft: 12}}>
+          <button type="submit" className="login-btn">
             Lấy lại mật khẩu
           </button>
         </div>
