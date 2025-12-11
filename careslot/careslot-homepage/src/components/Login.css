@@ -117,14 +117,10 @@
   position: relative;
 }
 
-.login-container {
-  position: relative;     
-}
-
 .close-button {
 position: absolute;
-  top: 4px;
-  right: 4px;
+  top: 5px;
+  right: 5px;
   border: none !important;
   background: transparent !important;
   border-radius: 0 !important;

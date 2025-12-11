@@ -716,7 +716,22 @@ app.put('/api/admin/doctors/:id/toggle-active', verifyToken, isAdmin, async (req
 
 app.get('/api/admin/appointments', verifyToken, isAdmin, async (req, res) => {
   try {
-    const sql = `SELECT a.id, a.patient_name, a.patient_phone, a.appointment_time, a.status, a.service_id, s.name AS service_name, a.doctor_id, d.name AS doctor_name FROM appointments a JOIN services s ON a.service_id = s.id LEFT JOIN doctors d ON a.doctor_id = d.id ORDER BY a.appointment_time DESC`;
+    const sql = `
+      SELECT
+        a.id,
+        a.patient_name,
+        a.patient_phone,
+        DATE_FORMAT(a.appointment_time, '%Y-%m-%d %H:%i:%s') AS appointment_time,  -- ✅ format thành string local
+        a.status,
+        a.service_id,
+        s.name AS service_name,
+        a.doctor_id,
+        d.name AS doctor_name
+      FROM appointments a
+      JOIN services s ON a.service_id = s.id
+      LEFT JOIN doctors d ON a.doctor_id = d.id
+      ORDER BY a.appointment_time DESC
+    `;
     const [appointments] = await db.query(sql);
     res.json(appointments);
   } catch (error) {
@@ -760,7 +775,18 @@ app.get('/api/doctor/appointments/range', verifyToken, isDoctor, async (req, res
         const [doctorRows] = await db.query('SELECT id FROM doctors WHERE user_id = ?', [req.user.id]);
         if (doctorRows.length === 0) return res.status(404).json({ message: 'Không tìm thấy hồ sơ bác sĩ.' });
         const doctorId = doctorRows[0].id;
-        const query = `SELECT a.id, a.patient_name, a.appointment_time, a.status, s.name as service_name FROM appointments a JOIN services s ON a.service_id = s.id WHERE a.doctor_id = ? AND a.appointment_time >= ? AND a.appointment_time < DATE_ADD(?, INTERVAL 1 DAY) ORDER BY a.appointment_time ASC`;
+        const query = `SELECT 
+                           a.id, 
+                           a.patient_name, 
+                           DATE_FORMAT(a.appointment_time, '%Y-%m-%d %H:%i:%s') AS appointment_time,  -- fix timezone
+                           a.status, 
+                           s.name AS service_name 
+                       FROM appointments a 
+                       JOIN services s ON a.service_id = s.id 
+                       WHERE a.doctor_id = ? 
+                         AND a.appointment_time >= ? 
+                         AND a.appointment_time < DATE_ADD(?, INTERVAL 1 DAY) 
+                       ORDER BY a.appointment_time ASC`;
         const [appointments] = await db.query(query, [doctorId, startDate, endDate]);
         res.json(appointments);
     } catch (error) {
@@ -775,7 +801,15 @@ app.get('/api/doctor/appointments', verifyToken, isDoctor, async (req, res) => {
         const [doctorRows] = await db.query('SELECT id FROM doctors WHERE user_id = ?', [req.user.id]);
         if (doctorRows.length === 0) return res.status(404).json({ message: 'Không tìm thấy hồ sơ bác sĩ cho tài khoản này.' });
         const doctorId = doctorRows[0].id;
-        const query = `SELECT a.*, s.name as service_name FROM appointments a JOIN services s ON a.service_id = s.id WHERE a.doctor_id = ? AND DATE(a.appointment_time) = ? ORDER BY a.appointment_time ASC`;
+        const query = `SELECT 
+                           a.*,
+                           DATE_FORMAT(a.appointment_time, '%Y-%m-%d %H:%i:%s') AS appointment_time,  -- override
+                           s.name AS service_name 
+                       FROM appointments a 
+                       JOIN services s ON a.service_id = s.id 
+                       WHERE a.doctor_id = ? 
+                         AND DATE(a.appointment_time) = ? 
+                       ORDER BY a.appointment_time ASC`;
         const [appointments] = await db.query(query, [doctorId, date]);
         res.json(appointments);
     } catch (error) {
@@ -802,10 +836,40 @@ app.put('/api/doctor/appointments/:id/status', verifyToken, isDoctor, async (req
 app.get('/api/doctor/appointments/:id/details', verifyToken, isDoctor, async (req, res) => {
     try {
         const { id } = req.params;
-        const [appointmentRows] = await db.query(`SELECT a.*, s.name as service_name, u.date_of_birth, u.gender FROM appointments a JOIN services s ON a.service_id = s.id LEFT JOIN users u ON a.user_id = u.id WHERE a.id = ?`, [id]);
+        const [appointmentRows] = await db.query(
+          `SELECT 
+               a.*,
+               DATE_FORMAT(a.appointment_time, '%Y-%m-%d %H:%i:%s') AS appointment_time,   -- fix
+               s.name AS service_name, 
+               DATE_FORMAT(u.date_of_birth, '%Y-%m-%d') AS date_of_birth,                -- chuẩn hóa ngày sinh
+               u.gender 
+           FROM appointments a 
+           JOIN services s ON a.service_id = s.id 
+           LEFT JOIN users u ON a.user_id = u.id 
+           WHERE a.id = ?`,
+          [id]
+        );
         if (appointmentRows.length === 0) return res.status(404).json({ message: 'Không tìm thấy lịch hẹn.' });
         const appointmentDetails = appointmentRows[0];
-        const [historyRows] = await db.query(`SELECT a.id, a.appointment_time, s.name as service_name, d.name as doctor_name, cn.diagnosis, cn.notes FROM appointments a JOIN services s ON a.service_id = s.id JOIN doctors d ON a.doctor_id = d.id LEFT JOIN clinical_notes cn ON a.id = cn.appointment_id WHERE a.patient_phone = ? AND a.id != ? AND a.status = 'completed' ORDER BY a.appointment_time DESC LIMIT 5`, [appointmentDetails.patient_phone, id]);
+        const [historyRows] = await db.query(
+          `SELECT 
+               a.id, 
+               DATE_FORMAT(a.appointment_time, '%Y-%m-%d %H:%i:%s') AS appointment_time,  -- fix
+               s.name AS service_name, 
+               d.name AS doctor_name, 
+               cn.diagnosis, 
+               cn.notes 
+           FROM appointments a 
+           JOIN services s ON a.service_id = s.id 
+           JOIN doctors d ON a.doctor_id = d.id 
+           LEFT JOIN clinical_notes cn ON a.id = cn.appointment_id 
+           WHERE a.patient_phone = ? 
+             AND a.id != ? 
+             AND a.status = 'completed' 
+           ORDER BY a.appointment_time DESC 
+           LIMIT 5`,
+          [appointmentDetails.patient_phone, id]
+        );
         const [currentNoteRows] = await db.query('SELECT * FROM clinical_notes WHERE appointment_id = ?', [id]);
         res.json({ details: appointmentDetails, history: historyRows, currentNote: currentNoteRows[0] || null });
     } catch (error) {
@@ -839,8 +903,20 @@ app.get('/api/doctor/schedules', verifyToken, isDoctor, async (req, res) => {
         const [doctorRows] = await db.query('SELECT id FROM doctors WHERE user_id = ?', [req.user.id]);
         if (doctorRows.length === 0) return res.status(404).json({ message: 'Không tìm thấy hồ sơ bác sĩ.' });
         const doctorId = doctorRows[0].id;
-        const [schedules] = await db.query('SELECT work_date, time_slots, is_day_off FROM doctor_schedules WHERE doctor_id = ? AND YEAR(work_date) = ? AND MONTH(work_date) = ?', [doctorId, year, month]);
-        const parsedSchedules = schedules.map(s => ({ work_date: s.work_date, is_day_off: s.is_day_off, time_slots: s.time_slots ? JSON.parse(s.time_slots) : [] }));
+        const [schedules] = await db.query(
+          `SELECT 
+               DATE_FORMAT(work_date, '%Y-%m-%d') AS work_date,    -- fix
+               time_slots, 
+               is_day_off 
+           FROM doctor_schedules 
+           WHERE doctor_id = ? AND YEAR(work_date) = ? AND MONTH(work_date) = ?`,
+          [doctorId, year, month]
+        );
+        const parsedSchedules = schedules.map(s => ({
+          work_date: s.work_date,
+          is_day_off: s.is_day_off,
+          time_slots: s.time_slots ? JSON.parse(s.time_slots) : []
+        }));
         res.json(parsedSchedules);
     } catch (error) {
         res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
@@ -882,7 +958,20 @@ app.get('/api/doctor/patients/:phone/history', verifyToken, isDoctor, async (req
         const [doctorRows] = await db.query('SELECT id FROM doctors WHERE user_id = ?', [req.user.id]);
         if (doctorRows.length === 0) return res.status(404).json({ message: 'Không tìm thấy hồ sơ bác sĩ.' });
         const doctorId = doctorRows[0].id;
-        const query = `SELECT a.id, a.patient_name as patient_name_at_time, a.appointment_time, a.status, s.name as service_name, cn.diagnosis, cn.notes FROM appointments a JOIN services s ON a.service_id = s.id LEFT JOIN clinical_notes cn ON a.id = cn.appointment_id AND a.doctor_id = cn.doctor_id WHERE a.doctor_id = ? AND a.patient_phone = ? ORDER BY a.appointment_time DESC`;
+        const query = `SELECT 
+                           a.id, 
+                           a.patient_name AS patient_name_at_time, 
+                           DATE_FORMAT(a.appointment_time, '%Y-%m-%d %H:%i:%s') AS appointment_time,  -- fix
+                           a.status, 
+                           s.name AS service_name, 
+                           cn.diagnosis, 
+                           cn.notes 
+                       FROM appointments a 
+                       JOIN services s ON a.service_id = s.id 
+                       LEFT JOIN clinical_notes cn 
+                         ON a.id = cn.appointment_id AND a.doctor_id = cn.doctor_id 
+                       WHERE a.doctor_id = ? AND a.patient_phone = ? 
+                       ORDER BY a.appointment_time DESC`;
         const [history] = await db.query(query, [doctorId, phone]);
         res.json(history);
     } catch (error) {
@@ -895,13 +984,31 @@ app.get('/api/doctor/patients/:phone/history', verifyToken, isDoctor, async (req
 // ==================================================
 app.get('/api/receptionist/appointments', verifyToken, isReceptionist, async (req, res) => {
     try {
-        const query = `SELECT a.id, a.patient_name, a.patient_phone, a.appointment_time, a.status, a.reminder_sent_at, d.name as doctor_name, s.name as service_name, COALESCE(u.email, a.patient_email) as patient_email FROM appointments a JOIN doctors d ON a.doctor_id = d.id JOIN services s ON a.service_id = s.id LEFT JOIN users u ON a.patient_phone = u.phone WHERE a.status = 'confirmed' AND a.reminder_sent_at IS NULL AND a.appointment_time >= CURDATE() ORDER BY a.appointment_time ASC`;
+        const query = `SELECT 
+                           a.id, 
+                           a.patient_name, 
+                           a.patient_phone, 
+                           DATE_FORMAT(a.appointment_time, '%Y-%m-%d %H:%i:%s') AS appointment_time,  -- fix
+                           a.status, 
+                           DATE_FORMAT(a.reminder_sent_at, '%Y-%m-%d %H:%i:%s') AS reminder_sent_at, -- fix
+                           d.name AS doctor_name, 
+                           s.name AS service_name, 
+                           COALESCE(u.email, a.patient_email) AS patient_email 
+                       FROM appointments a 
+                       JOIN doctors d ON a.doctor_id = d.id 
+                       JOIN services s ON a.service_id = s.id 
+                       LEFT JOIN users u ON a.patient_phone = u.phone 
+                       WHERE a.status = 'confirmed' 
+                         AND a.reminder_sent_at IS NULL 
+                         AND a.appointment_time >= CURDATE() 
+                       ORDER BY a.appointment_time ASC`;
         const [appointments] = await db.query(query);
         res.json(appointments);
     } catch (error) {
         res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
     }
 });
+
 
 app.post('/api/receptionist/appointments/:id/remind', verifyToken, isReceptionist, async (req, res) => {
     const { id } = req.params;
@@ -932,7 +1039,21 @@ app.post('/api/receptionist/appointments/:id/remind', verifyToken, isReceptionis
 
 app.get('/api/receptionist/pending-appointments', verifyToken, isReceptionist, async (req, res) => {
     try {
-        const query = `SELECT a.id, a.patient_name, a.patient_phone, a.appointment_time, a.status, d.name as doctor_name, s.name as service_name, COALESCE(u.email, a.patient_email) as patient_email FROM appointments a JOIN doctors d ON a.doctor_id = d.id JOIN services s ON a.service_id = s.id LEFT JOIN users u ON a.patient_phone = u.phone WHERE a.status = 'pending' ORDER BY a.appointment_time ASC`;
+        const query = `SELECT 
+                           a.id, 
+                           a.patient_name, 
+                           a.patient_phone, 
+                           DATE_FORMAT(a.appointment_time, '%Y-%m-%d %H:%i:%s') AS appointment_time,  -- fix
+                           a.status, 
+                           d.name AS doctor_name, 
+                           s.name AS service_name, 
+                           COALESCE(u.email, a.patient_email) AS patient_email 
+                       FROM appointments a 
+                       JOIN doctors d ON a.doctor_id = d.id 
+                       JOIN services s ON a.service_id = s.id 
+                       LEFT JOIN users u ON a.patient_phone = u.phone 
+                       WHERE a.status = 'pending' 
+                       ORDER BY a.appointment_time ASC`;
         const [appointments] = await db.query(query);
         res.json(appointments);
     } catch (error) {
@@ -979,25 +1100,40 @@ app.post('/api/receptionist/appointments/:id/cancel', verifyToken, isReceptionis
 app.get('/api/receptionist/patients', verifyToken, isReceptionist, async (req, res) => {
     try {
         const query = `
-            SELECT p.id, p.name AS patient_name, p.dob, p.gender, p.relationship, p.phone AS patient_phone, u.full_name AS guardian_name
+            SELECT 
+                p.id, 
+                p.name AS patient_name, 
+                DATE_FORMAT(p.dob, '%Y-%m-%d') AS dob,          -- fix
+                p.gender, 
+                p.relationship, 
+                p.phone AS patient_phone, 
+                u.full_name AS guardian_name
             FROM dependent_profiles p
             JOIN users u ON p.guardian_user_id = u.id
 
             UNION ALL
 
-            SELECT u.id, u.full_name AS patient_name, u.date_of_birth AS dob, u.gender, 'Bản thân' AS relationship, u.phone AS patient_phone, u.full_name AS guardian_name
+            SELECT 
+                u.id, 
+                u.full_name AS patient_name, 
+                DATE_FORMAT(u.date_of_birth, '%Y-%m-%d') AS dob, -- fix
+                u.gender, 
+                'Bản thân' AS relationship, 
+                u.phone AS patient_phone, 
+                u.full_name AS guardian_name
             FROM users u
             WHERE u.phone IS NOT NULL AND u.phone != ''
 
             UNION ALL
 
-            SELECT NULL AS id,
-                   MAX(a.patient_name) AS patient_name,
-                   MAX(a.patient_dob) AS dob,
-                   NULL AS gender,
-                   'Bệnh nhân vãng lai' AS relationship,
-                   a.patient_phone,
-                   MAX(a.patient_name) AS guardian_name
+            SELECT 
+                NULL AS id,
+                MAX(a.patient_name) AS patient_name,
+                DATE_FORMAT(MAX(a.patient_dob), '%Y-%m-%d') AS dob, -- fix
+                NULL AS gender,
+                'Bệnh nhân vãng lai' AS relationship,
+                a.patient_phone,
+                MAX(a.patient_name) AS guardian_name
             FROM appointments a
             WHERE a.patient_phone IS NOT NULL AND a.patient_phone != ''
             GROUP BY a.patient_phone
@@ -1013,7 +1149,21 @@ app.get('/api/receptionist/patients', verifyToken, isReceptionist, async (req, r
 app.get('/api/receptionist/patients/:phone/history', verifyToken, isReceptionist, async (req, res) => {
     const { phone } = req.params;
     try {
-        const query = `SELECT a.id, a.patient_name, a.appointment_time, a.status, s.name as service_name, d.name as doctor_name, cn.diagnosis, cn.notes FROM appointments a JOIN services s ON a.service_id = s.id JOIN doctors d ON a.doctor_id = d.id LEFT JOIN clinical_notes cn ON a.id = cn.appointment_id WHERE a.patient_phone = ? ORDER BY a.appointment_time DESC`;
+        const query = `SELECT 
+                           a.id, 
+                           a.patient_name, 
+                           DATE_FORMAT(a.appointment_time, '%Y-%m-%d %H:%i:%s') AS appointment_time,  -- fix
+                           a.status, 
+                           s.name AS service_name, 
+                           d.name AS doctor_name, 
+                           cn.diagnosis, 
+                           cn.notes 
+                       FROM appointments a 
+                       JOIN services s ON a.service_id = s.id 
+                       JOIN doctors d ON a.doctor_id = d.id 
+                       LEFT JOIN clinical_notes cn ON a.id = cn.appointment_id 
+                       WHERE a.patient_phone = ? 
+                       ORDER BY a.appointment_time DESC`;
         const [history] = await db.query(query, [phone]);
         res.json(history);
     } catch (error) {
