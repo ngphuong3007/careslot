@@ -452,28 +452,60 @@ app.get('/api/doctors', async (req, res) => {
 app.get('/api/doctors/:id/schedule', async (req, res) => {
   const { id } = req.params;
   const { date } = req.query;
-  if (!date) return res.status(400).json({ message: 'Vui lòng cung cấp ngày.' });
+
+  if (!date) {
+    return res.status(400).json({ message: 'Vui lòng cung cấp ngày.' });
+  }
+
   try {
-    const [scheduleRows] = await db.query('SELECT time_slots, is_day_off FROM doctor_schedules WHERE doctor_id = ? AND work_date = ?', [id, date]);
+    // 1. Lấy lịch làm việc riêng trong doctor_schedules (nếu có)
+    const [scheduleRows] = await db.query(
+      'SELECT time_slots, is_day_off FROM doctor_schedules WHERE doctor_id = ? AND work_date = ?',
+      [id, date]
+    );
+
     let availableSlots = [];
     if (scheduleRows.length > 0) {
       const specificSchedule = scheduleRows[0];
-      if (!specificSchedule.is_day_off) availableSlots = specificSchedule.time_slots ? JSON.parse(specificSchedule.time_slots) : [];
+      if (!specificSchedule.is_day_off) {
+        availableSlots = specificSchedule.time_slots
+          ? JSON.parse(specificSchedule.time_slots)
+          : [];
+      }
     } else {
+      // Nếu chưa có lịch riêng thì dùng khung mặc định 08:00–16:30
       availableSlots = generateDefaultTimeSlots();
     }
-    const [bookedSlots] = await db.query('SELECT appointment_time FROM appointments WHERE doctor_id = ? AND DATE(appointment_time) = ? AND status != "cancelled"', [id, date]);
-    const bookedTimes = new Set(bookedSlots.map(slot => new Date(slot.appointment_time).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })));
-    const today = new Date();
-    const targetDate = new Date(date);
-    const isToday = today.toDateString() === targetDate.toDateString();
-    const finalSchedule = availableSlots.map(timeStr => {
-        const slotTime = new Date(`${date}T${timeStr}:00`);
-        const isPast = isToday && slotTime < today;
-        return { time: `${date}T${timeStr}:00`, status: isPast || bookedTimes.has(timeStr) ? 'booked' : 'available' };
-    });
+
+    // 2. Lấy các khung giờ đã có lịch (không bị hủy)
+    const [bookedSlots] = await db.query(
+      `SELECT appointment_time
+       FROM appointments
+       WHERE doctor_id = ?
+         AND DATE(appointment_time) = ?
+         AND status != 'cancelled'`,
+      [id, date]
+    );
+
+    const bookedTimes = new Set(
+      bookedSlots.map((slot) =>
+        new Date(slot.appointment_time).toLocaleTimeString('en-GB', {
+          hour: '2-digit',
+          minute: '2-digit',
+        })
+      )
+    );
+
+    // 3. Trả về danh sách slot, CHỈ đánh dấu slot đã được đặt.
+    //    Việc "slot đã qua giờ" sẽ để frontend tự tính theo múi giờ người dùng.
+    const finalSchedule = availableSlots.map((timeStr) => ({
+      time: `${date}T${timeStr}:00`,
+      status: bookedTimes.has(timeStr) ? 'booked' : 'available',
+    }));
+
     res.json(finalSchedule);
   } catch (error) {
+    console.error('[/api/doctors/:id/schedule] error:', error);
     res.status(500).json({ message: 'Lỗi server' });
   }
 });

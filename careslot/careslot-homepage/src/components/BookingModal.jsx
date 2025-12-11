@@ -237,20 +237,31 @@ const BookingModal = ({ onClose, currentUser, initialData = {}, isReExam = false
                                 <label>Chọn thời gian:</label>
                                 {scheduleLoading ? <p>Đang tải lịch...</p> : (
                                     <div className="time-slots-container">
-                                        {schedule.length > 0 ? schedule.map(slot => (
-                                            <button
-                                                type="button"
-                                                key={slot.time}
-                                                className={`time-slot ${slot.status === 'booked' ? 'time-slot-booked' : ''} ${slot.time === selectedTime ? 'time-slot-selected' : ''}`}
-                                                disabled={slot.status === 'booked'}
-                                                onClick={() => setSelectedTime(slot.time)}
-                                            >
-                                                {new Date(slot.time).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
-                                            </button>
-                                        )) : <p>Lịch ngày này không còn hoặc bác sĩ không làm việc.</p>}
+                                    {schedule.length > 0 ? schedule.map(slot => {
+                                        const isPast = new Date(slot.time) < new Date(); // giờ local của người dùng
+
+                                        return (
+                                        <button
+                                            type="button"
+                                            key={slot.time}
+                                            className={`time-slot ${
+                                            slot.status === 'booked' ? 'time-slot-booked' : ''
+                                            } ${slot.time === selectedTime ? 'time-slot-selected' : ''}`}
+                                            disabled={slot.status === 'booked' || isPast}
+                                            onClick={() => setSelectedTime(slot.time)}
+                                        >
+                                            {new Date(slot.time).toLocaleTimeString('vi-VN', {
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                            })}
+                                        </button>
+                                        );
+                                    }) : (
+                                        <p>Lịch ngày này không còn hoặc bác sĩ không làm việc.</p>
+                                    )}
                                     </div>
                                 )}
-                            </div>
+                                </div>
                         </>
                     )}
 
