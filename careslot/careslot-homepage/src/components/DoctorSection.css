@@ -1,7 +1,7 @@
 .doctor-section {
   padding: 4rem 2rem;
   /* SỬA LẠI: Thêm các thuộc tính layout và viền */
-  max-width: 1310px;
+  max-width: 90vw;
   margin: 48px auto; /* Tạo khoảng cách với các khu vực khác */
   background: linear-gradient(120deg, #f7fbff 0%, #b3e0ff 100%);
   border: 3px solid #1da1f2;
