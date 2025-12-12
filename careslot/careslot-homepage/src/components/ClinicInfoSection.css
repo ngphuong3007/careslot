@@ -1,11 +1,13 @@
 .clinic-info-section {
   padding: 4rem 2rem;
-  /* SỬA LẠI: Thêm các thuộc tính layout và viền */
-  max-width: 90vw;
-  margin: 48px auto; /* Tạo khoảng cách với các khu vực khác */
+  width: 100vw;
+  margin: 48px 0;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+
   background: linear-gradient(120deg, #f7fbff 0%, #b3e0ff 100%);
   border: 3px solid #1da1f2;
-  border-radius: 10px; /* Bo đều 4 góc */
+  border-radius: 10px;
   box-shadow: 0 8px 32px rgba(29,161,242,0.10);
   text-align: center;
 }
