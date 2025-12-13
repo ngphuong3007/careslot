@@ -77,6 +77,31 @@
     border: 1px solid #f5c6cb;
 }
 
+.profile-form .react-datepicker {
+    border: 1px solid #e5e7eb;
+    font-size: 0.9rem;
+}
+
+.profile-form .react-datepicker__header {
+    background-color: #fff;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.profile-form .react-datepicker__navigation {
+    top: 4px;
+    width: 24px;
+    height: 24px;
+    background: transparent;
+}
+
+.profile-form .react-datepicker__navigation--previous {
+    left: 8px;
+}
+
+.profile-form .react-datepicker__navigation--next {
+    right: 8px;
+}
+
 .profile-form .react-datepicker-wrapper {
     width: 100%;
 }
