@@ -32,12 +32,22 @@ const AdminDashboard = () => {
   const [timeRange, setTimeRange] = useState('week');
 
   useEffect(() => {
-    // ...existing code...
-    // { changed code } dùng apiRequest thay fetch localhost
     apiRequest(`/api/admin/dashboard-metrics?range=${timeRange}`)
-      .then(setStats)
+      .then((data) => {
+        const formatOptions =
+          timeRange === 'day'
+            ? { hour: '2-digit', minute: '2-digit' }
+            : { day: '2-digit', month: '2-digit' };
+
+        const revenue = (data.revenue || []).map((item) => ({
+          ...item,
+          // item.label đang là ISO -> format lại cho đẹp
+          label: new Date(item.label).toLocaleString('vi-VN', formatOptions),
+        }));
+
+        setStats({ ...data, revenue });
+      })
       .catch(console.error);
-    // ...existing code...
   }, [timeRange]);
 
   const chartData = {
