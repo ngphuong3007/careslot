@@ -2,7 +2,7 @@
   min-height: 95vh;
 
   width: 100%;
-  max-width: 1500px;
+  max-width: none;
   margin: 0 auto 48px auto;
 
   background: linear-gradient(120deg, #f7fbff 0%, #b3e0ff 100%);

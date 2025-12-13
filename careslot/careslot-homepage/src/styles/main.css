@@ -9,14 +9,3 @@ body {
   background: #fff;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
-
-@media (min-width: 1600px) {
-  .hero-section,
-  .news-custom-layout,
-  .doctor-section,
-  .clinic-info-section,
-  .dependent-profiles-container,
-  .user-profile-container {
-    max-width: 90vw;   /* ăn theo 90% chiều ngang màn hình */
-  }
-}
