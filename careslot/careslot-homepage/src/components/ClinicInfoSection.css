@@ -23,9 +23,12 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
-  max-width: 1200px;
+  width: 100%;
+  max-width: none;
+  padding: 0 2rem;
   margin: 0 auto;
   text-align: left;
+  box-sizing: border-box;
 }
 
 .info-item {
