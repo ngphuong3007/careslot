@@ -118,8 +118,9 @@
 }
 
 .close-button {
-position: absolute;
-  top: 5px;
+position: sticky;
+  top: 8px;
+  margin-left: auto; 
   right: 5px;
   border: none !important;
   background: transparent !important;

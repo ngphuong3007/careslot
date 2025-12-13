@@ -41,7 +41,6 @@ const AdminDashboard = () => {
 
         const revenue = (data.revenue || []).map((item) => ({
           ...item,
-          // item.label đang là ISO -> format lại cho đẹp
           label: new Date(item.label).toLocaleString('vi-VN', formatOptions),
         }));
 
