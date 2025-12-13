@@ -208,6 +208,7 @@ const BookingModal = ({ onClose, currentUser, initialData = {}, isReExam = false
                             showYearDropdown
                             dropdownMode="select"
                             locale="vi"
+                            maxDate={new Date()}  
                         />
                     </div>
 

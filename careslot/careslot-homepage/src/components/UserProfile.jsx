@@ -121,6 +121,7 @@ const UserProfile = () => {
                             showYearDropdown
                             dropdownMode="select"
                             locale="vi"
+                            maxDate={new Date()}  
                         />
                     </div>
                 </div>

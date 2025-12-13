@@ -184,6 +184,13 @@ const normalizeDate = (value) => {
   return `${yyyy}-${mm}-${dd}`;
 };
 
+const isFutureDate = (value) => {
+  if (!value) return false;
+  const d = new Date(value);
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  return d > today;
+};
 // ==================================================
 // === MIDDLEWARE XÁC THỰC & PHÂN QUYỀN ============
 // ==================================================
@@ -355,6 +362,10 @@ app.get('/api/user/profile', verifyToken, async (req, res) => {
 app.put('/api/user/profile', verifyToken, async (req, res) => {
     try {
         const { full_name, date_of_birth, gender, address, email, phone } = req.body;
+
+        if (date_of_birth && isFutureDate(date_of_birth)) {
+            return res.status(400).json({ message: 'Ngày sinh không được lớn hơn hôm nay.' });
+        }
         const userId = req.user.id;
 
         await db.query(
@@ -415,6 +426,10 @@ app.get('/api/user/dependents', verifyToken, async (req, res) => {
 app.post('/api/user/dependents', verifyToken, async (req, res) => {
     const { name, dob, gender, relationship, phone } = req.body;
     if (!name || !relationship) return res.status(400).json({ message: 'Tên và mối quan hệ là bắt buộc.' });
+
+    if (dob && isFutureDate(dob)) {
+        return res.status(400).json({ message: 'Ngày sinh người thân không được lớn hơn hôm nay.' });
+    }
     try {
         const [result] = await db.query(
             'INSERT INTO dependent_profiles (guardian_user_id, name, dob, gender, relationship, phone) VALUES (?, ?, ?, ?, ?, ?)',
@@ -539,6 +554,10 @@ app.post('/api/appointments', async (req, res) => {
     const { service_id, patient_name, patient_phone, patient_dob, patient_email, doctor_id, appointment_time, user_id, dependent_id } = req.body;
     if (!service_id || !patient_name || !patient_phone || !doctor_id || !appointment_time) {
         return res.status(400).json({ message: 'Vui lòng điền đầy đủ thông tin bắt buộc.' });
+    }
+
+    if (patient_dob && isFutureDate(patient_dob)) {
+        return res.status(400).json({ message: 'Ngày sinh bệnh nhân không được lớn hơn hôm nay.' });
     }
     try {
         const [existing] = await db.query('SELECT id FROM appointments WHERE doctor_id = ? AND appointment_time = ? AND status NOT IN (?)', [doctor_id, appointment_time, 'cancelled']);
@@ -1202,6 +1221,11 @@ app.post('/api/receptionist/appointments', verifyToken, isReceptionist, async (r
 app.put('/api/user/dependents/:id', verifyToken, async (req, res) => {
     const { id } = req.params;
     const { name, dob, gender, relationship, phone } = req.body;
+    if (!name || !relationship) return res.status(400).json({ message: 'Tên và mối quan hệ là bắt buộc.' });
+
+    if (dob && isFutureDate(dob)) {
+        return res.status(400).json({ message: 'Ngày sinh người thân không được lớn hơn hôm nay.' });
+    }
     if (!name || !relationship) return res.status(400).json({ message: 'Tên và mối quan hệ là bắt buộc.' });
 
     const [rows] = await db.query('SELECT id FROM dependent_profiles WHERE id = ? AND guardian_user_id = ?', [id, req.user.id]);

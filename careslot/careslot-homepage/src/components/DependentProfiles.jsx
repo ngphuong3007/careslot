@@ -174,6 +174,7 @@ const DependentProfiles = () => {
                                 showYearDropdown
                                 dropdownMode="select"
                                 locale="vi"
+                                maxDate={new Date()}  
                             />
                         </div>
                         <div className="form-group">
