@@ -3,25 +3,24 @@
 
   width: calc(100% - 4rem);
   max-width: none;
-  margin: 48px auto;
+  margin: 48px 2rem;
 
   background: linear-gradient(120deg, #f7fbff 0%, #b3e0ff 100%);
   border: 3px solid #1da1f2;
   border-radius: 10px;
   box-shadow: 0 8px 32px rgba(29,161,242,0.10);
   text-align: center;
+  box-sizing: border-box;
 }
 
 .doctor-section h2 {
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
-  /* Đổi màu tiêu đề cho hợp với nền xanh */
   color: #1d3557;
 }
 
 .doctor-section .section-subtitle {
   font-size: 1.1rem;
-  /* Đổi màu phụ đề */
   color: #457b9d;
   margin-bottom: 3rem;
 }
@@ -39,17 +38,15 @@
 
 .doctor-card {
   background-color: #fff;
-  border-radius: 12px; /* Bo góc nhiều hơn */
-  /* Đổ bóng màu xanh tương tự HeroSection */
+  border-radius: 12px; 
   box-shadow: 0 4px 20px rgba(29, 161, 242, 0.1);
   padding: 1.5rem;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border: 1px solid #e0f3ff; /* Thêm viền xanh nhạt */
+  border: 1px solid #e0f3ff;
 }
 
 .doctor-card:hover {
   transform: translateY(-10px);
-  /* Tăng độ đậm của bóng khi hover */
   box-shadow: 0 8px 30px rgba(29, 161, 242, 0.15);
 }
 
@@ -59,14 +56,12 @@
   border-radius: 50%;
   object-fit: cover;
   margin: 0 auto 1rem auto;
-  /* Đổi màu viền ảnh sang màu xanh nhạt */
   border: 4px solid #b3e0ff;
 }
 
 .doctor-name {
   font-size: 1.25rem;
   margin-bottom: 0.25rem;
-  /* Sử dụng màu xanh chủ đạo */
   color: #1da1f2;
 }
 
@@ -79,7 +74,6 @@
   font-size: 0.9rem;
 }
 
-/* CSS mới để làm nổi bật thẻ của bác sĩ đang đăng nhập */
 .doctor-card.current-user-doctor {
   border: 2px solid #007bff;
   box-shadow: 0 8px 16px rgba(0, 123, 255, 0.2);
