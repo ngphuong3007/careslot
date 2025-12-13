@@ -1,7 +1,7 @@
 .news-custom-layout {
   min-height: 95vh;
 
-  width: 100%;
+  width: calc(100% - 4rem);
   max-width: none;
   margin: 0 auto 48px auto;
 

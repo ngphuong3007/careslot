@@ -1,15 +1,16 @@
 .clinic-info-section {
   padding: 4rem 2rem;
 
-  width: 100%;
+  width: calc(100% - 4rem);
   max-width: none;
-  margin: 48px auto;
+  margin: 48px 2rem;
 
   background: linear-gradient(120deg, #f7fbff 0%, #b3e0ff 100%);
   border: 3px solid #1da1f2;
   border-radius: 10px;
   box-shadow: 0 8px 32px rgba(29,161,242,0.10);
   text-align: center;
+  box-sizing: border-box;
 }
 
 .clinic-info-section h2 {
@@ -25,7 +26,7 @@
   gap: 2rem;
   width: 100%;
   max-width: none;
-  padding: 0 2rem;
+  padding: 0 1rem;
   margin: 0 auto;
   text-align: left;
   box-sizing: border-box;

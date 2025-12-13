@@ -1,9 +1,7 @@
 .hero-section {
   min-height: 90vh;
-
-  /* ✅ section nằm giữa, rộng hơn trước */
-  width: 100%;
-  max-width: none;          /* trước đây 1310px hoặc 90vw */
+  width: calc(100% - 4rem);
+  max-width: none; 
   margin: 80px auto 48px auto;
 
   background: linear-gradient(120deg, #f7fbff 0%, #b3e0ff 100%);
