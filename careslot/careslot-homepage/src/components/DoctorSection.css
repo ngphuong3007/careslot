@@ -1,7 +1,7 @@
 .doctor-section {
   padding: 4rem 2rem;
 
-  width: 100%;
+  width: calc(100% - 4rem);
   max-width: none;
   margin: 48px auto;
 
