@@ -51,7 +51,7 @@
     flex-grow: 1; /* Phần nội dung chính sẽ chiếm hết không gian còn lại */
     padding: 20px;
     background-color: #fff;
-    margin-left: 240px; /* Bằng chiều rộng của sidebar */
+    margin-left: 220px; /* Bằng chiều rộng của sidebar */
     margin-top: 80px; /* Bằng chiều cao của header */
 }
 @media (max-width: 768px) {
