@@ -1,34 +1,33 @@
-.doctor-layout-container {
+.receptionist-layout-container {
     display: flex;
-    min-height: 100vh;
 }
 
-.doctor-sidebar {
-    width: 240px;                          /* ✅ giống Receptionist */
+.receptionist-sidebar {
+    width: 240px;
     background-color: #f8f9fa;
     border-right: 1px solid #dee2e6;
     padding: 20px;
-    padding-top: 100px;                    /* ✅ giống Receptionist */
+    padding-top: 100px; /* Đẩy nội dung xuống dưới Header */
     flex-shrink: 0;
     position: fixed;
     top: 0;
     left: 0;
     height: 100vh;
     box-sizing: border-box;
-    z-index: 99;
+    z-index: 99; /* Đảm bảo nằm dưới Header */
 }
 
-.doctor-sidebar nav ul {
+.receptionist-sidebar nav ul {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-.doctor-sidebar nav li {
+.receptionist-sidebar nav li {
     margin-bottom: 10px;
 }
 
-.doctor-sidebar nav a {
+.receptionist-sidebar nav a {
     display: block;
     padding: 12px 15px;
     text-decoration: none;
@@ -38,52 +37,39 @@
     transition: background-color 0.2s, color 0.2s;
 }
 
-.doctor-sidebar nav a:hover {
+.receptionist-sidebar nav a:hover {
     background-color: #e9ecef;
 }
 
-.doctor-sidebar nav a.active-link {
+.receptionist-sidebar nav a.active-link {
     background-color: #007bff;
     color: #fff;
 }
 
-.doctor-main-content {
+.receptionist-main-content {
     flex-grow: 1;
     padding: 20px;
-    margin-left: 240px;                    /* ✅ khớp với sidebar width */
-    margin-top: 80px;
+    margin-left: 240px; /* Bằng chiều rộng của sidebar */
+    margin-top: 80px; /* Bằng chiều cao của header */
 }
-
-/* Cho trang chat full height */
-.doctor-main-content > .staff-chat-layout {
-    margin: -20px;                         /* ✅ bù lại padding của main-content */
-    height: calc(100vh - 80px);
-}
-
 @media (max-width: 768px) {
-    .doctor-layout-container {
-        flex-direction: column;
-    }
+  .receptionist-layout-container {
+    flex-direction: column;
+  }
 
-    .doctor-sidebar {
-        position: static;
-        width: 100%;
-        height: auto;
-        padding: 16px;
-        padding-top: 72px;
-        border-right: none;
-        border-bottom: 1px solid #dee2e6;
-    }
+  .receptionist-sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+    padding: 16px;
+    padding-top: 72px; /* nếu cần trừ header */
+    border-right: none;
+    border-bottom: 1px solid #dee2e6;
+  }
 
-    .doctor-main-content {
-        margin-left: 0;
-        margin-top: 0;
-        padding: 16px;
-    }
-
-    .doctor-main-content > .staff-chat-layout {
-        margin: -16px;
-        height: auto;
-        min-height: 500px;
-    }
+  .receptionist-main-content {
+    margin-left: 0;
+    margin-top: 0;
+    padding: 16px;
+  }
 }

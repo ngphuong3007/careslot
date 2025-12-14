@@ -1,20 +1,21 @@
 .doctor-layout-container {
     display: flex;
-    min-height: calc(100vh - 80px); /* Chiều cao màn hình trừ đi chiều cao Header */
+    min-height: 100vh;
 }
 
 .doctor-sidebar {
-    width: 240px;
+    width: 240px;                          /* ✅ giống Receptionist */
     background-color: #f8f9fa;
     border-right: 1px solid #dee2e6;
-    /* SỬA LẠI: Thêm padding-top để đẩy sidebar xuống dưới Header */
-    padding: 80px 20px 20px 20px;
+    padding: 20px;
+    padding-top: 100px;                    /* ✅ giống Receptionist */
     flex-shrink: 0;
     position: fixed;
     top: 0;
     left: 0;
     height: 100vh;
-    z-index: 100; /* Đảm bảo sidebar nằm dưới Header nếu Header có z-index cao hơn */
+    box-sizing: border-box;
+    z-index: 99;
 }
 
 .doctor-sidebar nav ul {
@@ -41,36 +42,48 @@
     background-color: #e9ecef;
 }
 
-/* Style cho link đang được chọn */
 .doctor-sidebar nav a.active-link {
     background-color: #007bff;
     color: #fff;
 }
 
 .doctor-main-content {
-    flex-grow: 1; /* Phần nội dung chính sẽ chiếm hết không gian còn lại */
+    flex-grow: 1;
     padding: 20px;
-    background-color: #fff;
-    margin-left: 220px; /* Bằng chiều rộng của sidebar */
-    margin-top: 80px; /* Bằng chiều cao của header */
+    margin-left: 240px;                    /* ✅ khớp với sidebar width */
+    margin-top: 80px;
 }
+
+/* Cho trang chat full height */
+.doctor-main-content > .staff-chat-layout {
+    margin: -20px;                         /* ✅ bù lại padding của main-content */
+    height: calc(100vh - 80px);
+}
+
 @media (max-width: 768px) {
-  .doctor-layout-container {
-    flex-direction: column;
-  }
+    .doctor-layout-container {
+        flex-direction: column;
+    }
 
-  .doctor-sidebar {
-    position: static;
-    width: 100%;
-    height: auto;
-    padding: 16px;
-    border-right: none;
-    border-bottom: 1px solid #dee2e6;
-  }
+    .doctor-sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+        padding: 16px;
+        padding-top: 72px;
+        border-right: none;
+        border-bottom: 1px solid #dee2e6;
+    }
 
-  .doctor-main-content {
-    margin-left: 0;
-    margin-top: 0;
-    padding: 16px;
-  }
+    .doctor-main-content {
+        margin-left: 0;
+        margin-top: 0;
+        padding: 16px;
+    }
+
+    .doctor-main-content > .staff-chat-layout {
+        margin: -16px;
+        height: auto;
+        min-height: 500px;
+    }
 }
